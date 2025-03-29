@@ -1,26 +1,29 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* These styles can prevent scrolling */
+html, body {
+    min-height: 100%;
+    overflow-y: auto;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Force hide TradingView elements on mobile */
+@media (max-width: 767px) {
+  [id*="tradingview-widget"],
+  .tradingview-widget-container,
+  iframe[src*="tradingview.com"] {
+    display: none !important;
+    height: 0 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    pointer-events: none !important;
+    z-index: -1 !important; /* Ensure it's below all other content */
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  
+  /* Fix to ensure Header interactive elements work on mobile */
+  header {
+    position: relative;
+    z-index: 10000;
+  }
 }

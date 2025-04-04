@@ -179,7 +179,7 @@ export default function EditBlogPostPage({ params }: { params: { id: string } })
               תוכן
             </label>
             <Editor
-              apiKey="***REMOVED***"
+              apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
               value={formData.content || ''}
               onEditorChange={handleEditorChange}
               init={{

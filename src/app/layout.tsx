@@ -4,6 +4,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import TradingViewTicker from "@/components/TradingViewTicker";
+import WhatsAppButton from "@/components/WhatsAppButton";
+import BringThemHomeWidget from "@/components/BringThemHomeWidget";
 import { Assistant } from "next/font/google";
 import Providers from "@/components/Providers";
 
@@ -34,6 +36,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </main>
             <Footer />
           </div>
+          <WhatsAppButton />
+          <BringThemHomeWidget />
         </Providers>
       </body>
     </html>

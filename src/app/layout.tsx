@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import TradingViewTicker from "@/components/TradingViewTicker";
 import { Assistant } from "next/font/google";
+import Providers from "@/components/Providers";
 
 const assistant = Assistant({
   subsets: ["latin", "hebrew"],
@@ -23,15 +24,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="he" dir="rtl" className={assistant.className}>
       <body className={assistant.className}>
-        {/* TradingViewTicker completely removed from rendering on mobile */}
-        <TradingViewTicker />
-        <div className="pt-0 md:pt-12"> {/* Only add padding on desktop for ticker */}
-          <Header />
-          <main>
-            {children}
-          </main>
-          <Footer />
-        </div>
+        <Providers>
+          {/* TradingViewTicker completely removed from rendering on mobile */}
+          <TradingViewTicker />
+          <div className="pt-0 md:pt-12"> {/* Only add padding on desktop for ticker */}
+            <Header />
+            <main>
+              {children}
+            </main>
+            <Footer />
+          </div>
+        </Providers>
       </body>
     </html>
   );

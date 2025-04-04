@@ -21,6 +21,23 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile menu when path changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    setIsDropdownOpen(false);
+  }, [pathname]);
+
+  // Function to handle link clicks in mobile menu
+  const handleMobileLinkClick = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  // Function to handle dropdown link clicks in mobile menu
+  const handleDropdownLinkClick = () => {
+    // We don't close the dropdown menu here, just track the click
+    setIsMobileMenuOpen(false);
+  };
+
   const navLinks = [
     { href: "/", label: "עמוד הבית" },
     { href: "#", label: "נתחיל מכאן", isDropdown: true },
@@ -183,30 +200,35 @@ export default function Header() {
                         <Link
                           href="/podcast"
                           className="block py-2 text-gray-700 hover:text-[#022E41]"
+                          onClick={handleDropdownLinkClick}
                         >
                           פודקאסט ״מפת החום״
                         </Link>
                         <Link
                           href="/blog"
                           className="block py-2 text-gray-700 hover:text-[#022E41]"
+                          onClick={handleDropdownLinkClick}
                         >
                           הבלוג שלנו
                         </Link>
                         <Link
                           href="/ynet"
                           className="block py-2 text-gray-700 hover:text-[#022E41]"
+                          onClick={handleDropdownLinkClick}
                         >
                           גיא נתן ב - YNET
                         </Link>
                         <Link
                           href="/calculator"
                           className="block py-2 text-gray-700 hover:text-[#022E41]"
+                          onClick={handleDropdownLinkClick}
                         >
                           חישוב ריבית דריבית
                         </Link>
                         <Link
                           href="/portfolio"
                           className="block py-2 text-gray-700 hover:text-[#022E41]"
+                          onClick={handleDropdownLinkClick}
                         >
                           פעימות לתיקי השקעות
                         </Link>
@@ -224,6 +246,7 @@ export default function Header() {
                         ? "bg-[#022E41] text-white px-5 py-2 rounded-xl text-center mt-4"
                         : ""
                     }`}
+                    onClick={handleMobileLinkClick}
                   >
                     {link.label}
                   </Link>

@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import { FaBars, FaTimes } from "react-icons/fa";
+import AdminButton from './AdminButton';
 
 export default function Header() {
   const pathname = usePathname();
@@ -60,6 +61,11 @@ export default function Header() {
               
               {/* Desktop navigation - hidden on mobile and tablet */}
               <nav className="hidden lg:flex flex-wrap items-center gap-10 text-xl text-[#022E41] order-3">
+                {/* Admin Button - Only shows when admin is logged in */}
+                <div className="ml-4">
+                  <AdminButton />
+                </div>
+                
                 {navLinks.map((link) => {
                   if (link.isDropdown) {
                     return (
@@ -150,6 +156,11 @@ export default function Header() {
       {isMobileMenuOpen && (
         <div className="lg:hidden bg-white p-4 shadow-lg z-[10000]">
           <nav className="flex flex-col space-y-4">
+            {/* Admin Button in mobile menu */}
+            <div className="py-2">
+              <AdminButton />
+            </div>
+            
             {navLinks.map((link) => {
               if (link.isDropdown) {
                 return (

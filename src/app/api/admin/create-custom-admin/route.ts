@@ -25,8 +25,9 @@ export async function GET(request: NextRequest) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash('BAR123Bar', salt);
     
-    // Create the user
+    // Create the user with name field
     const user = await User.create({
+      name: 'Guy Natan',
       email: 'alive2154@gmail.com',
       password: hashedPassword,
       isAdmin: true,

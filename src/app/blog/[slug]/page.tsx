@@ -24,7 +24,7 @@ interface BlogPost {
 
 export default function BlogPostPage() {
   const params = useParams();
-  const { slug } = params;
+  const slug = params?.slug as string;
   
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
@@ -33,6 +33,19 @@ export default function BlogPostPage() {
   useEffect(() => {
     async function fetchBlogPost() {
       try {
+        // Special case for 'new' which might be incorrectly navigated to
+        if (slug === 'new') {
+          setError('אין מאמר בשם "new". מנתב אותך לדף היצירה הנכון...');
+          
+          // Optional: If user is an admin, redirect them to the correct create page after a delay
+          setTimeout(() => {
+            window.location.href = '/admin/dashboard/blog/new';
+          }, 3000);
+          
+          setLoading(false);
+          return;
+        }
+        
         setLoading(true);
         const response = await fetch(`/api/blog/${slug}`);
         if (!response.ok) {

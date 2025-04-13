@@ -1,4 +1,12 @@
 // Script to create an admin user
+// INSTRUCTIONS:
+// 1. Replace YOUR_ACTUAL_PASSWORD with your MongoDB password in the MONGODB_URI below
+// 2. Run this script with: node createAdmin.js
+// 3. This will create an admin user with:
+//    - Email: alive2154@gmail.com
+//    - Password: BAR123Bar
+//    - Name: Guy Natan
+
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 

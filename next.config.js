@@ -9,6 +9,15 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/blog/new',
+        destination: '/admin/dashboard/blog/new',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig; 

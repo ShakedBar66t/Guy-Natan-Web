@@ -10,20 +10,38 @@ export default function Dashboard() {
     draftPosts: 0,
   });
   
+  const [ynetStats, setYnetStats] = useState({
+    ynetArticles: 0,
+    recentArticles: 0,
+  });
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     async function fetchStats() {
       try {
-        const response = await fetch('/api/admin/blog/stats');
+        setLoading(true);
         
-        if (!response.ok) {
-          throw new Error('Failed to fetch stats');
+        // Fetch blog stats
+        const blogResponse = await fetch('/api/admin/blog/stats');
+        
+        if (!blogResponse.ok) {
+          throw new Error('Failed to fetch blog stats');
         }
         
-        const data = await response.json();
-        setStats(data);
+        const blogData = await blogResponse.json();
+        setStats(blogData);
+        
+        // Fetch Ynet stats
+        const ynetResponse = await fetch('/api/admin/ynet/stats');
+        
+        if (!ynetResponse.ok) {
+          throw new Error('Failed to fetch Ynet stats');
+        }
+        
+        const ynetData = await ynetResponse.json();
+        setYnetStats(ynetData);
       } catch (err) {
         console.error('Error fetching dashboard stats:', err);
         setError('טעינת סטטיסטיקות נכשלה');
@@ -70,6 +88,19 @@ export default function Dashboard() {
         </div>
       </div>
       
+      {/* Ynet Statistics */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="rounded-lg bg-white p-6 shadow-sm">
+          <h3 className="text-lg font-medium text-gray-700">סך הכל כתבות Ynet</h3>
+          <p className="mt-2 text-3xl font-bold">{ynetStats.ynetArticles}</p>
+        </div>
+        
+        <div className="rounded-lg bg-white p-6 shadow-sm">
+          <h3 className="text-lg font-medium text-gray-700">כתבות Ynet מהחודש האחרון</h3>
+          <p className="mt-2 text-3xl font-bold">{ynetStats.recentArticles}</p>
+        </div>
+      </div>
+      
       <div className="rounded-lg bg-white p-6 shadow-sm">
         <h3 className="mb-4 text-lg font-medium text-gray-700">פעולות מהירות</h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -87,6 +118,14 @@ export default function Dashboard() {
           >
             <span className="text-lg">📋</span>
             <span className="mr-2">נהל מאמרים</span>
+          </Link>
+          
+          <Link
+            href="/admin/dashboard/ynet/new"
+            className="flex items-center rounded-md bg-red-100 p-4 text-red-700 hover:bg-red-200"
+          >
+            <span className="text-lg">📰</span>
+            <span className="mr-2">הוסף כתבת Ynet חדשה</span>
           </Link>
         </div>
       </div>

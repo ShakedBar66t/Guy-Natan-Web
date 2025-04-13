@@ -14,6 +14,14 @@ export async function GET(request: NextRequest, context: Params) {
     
     const { slug } = context.params;
     
+    // Special case for 'new' slug which shouldn't be handled here
+    if (slug === 'new') {
+      return NextResponse.json(
+        { success: false, message: 'Invalid slug: "new" is a reserved path' },
+        { status: 404 }
+      );
+    }
+    
     // Find the blog post by slug and ensure it's published
     const blogPost = await BlogPost.findOne({ 
       slug,

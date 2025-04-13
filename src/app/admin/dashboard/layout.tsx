@@ -50,7 +50,8 @@ export default function DashboardLayout({
               className={`block rounded-md px-3 py-2 ${
                 isActive('/admin/dashboard') && 
                 !isActive('/admin/dashboard/blog') && 
-                !isActive('/admin/dashboard/glossary')
+                !isActive('/admin/dashboard/glossary') &&
+                !isActive('/admin/dashboard/ynet')
                   ? 'bg-blue-50 text-blue-700'
                   : 'text-gray-700 hover:bg-gray-50'
               }`}
@@ -77,6 +78,16 @@ export default function DashboardLayout({
             >
               מילון מושגים
             </Link>
+            <Link
+              href="/admin/dashboard/ynet"
+              className={`block rounded-md px-3 py-2 ${
+                isActive('/admin/dashboard/ynet')
+                  ? 'bg-blue-50 text-blue-700'
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              כתבות Ynet
+            </Link>
           </nav>
           <div className="mt-auto p-4">
             <button
@@ -98,7 +109,9 @@ export default function DashboardLayout({
                 ? 'ניהול מאמרים' 
                 : isActive('/admin/dashboard/glossary')
                   ? 'ניהול מילון מושגים'
-                  : 'לוח בקרה'}
+                  : isActive('/admin/dashboard/ynet')
+                    ? 'ניהול כתבות Ynet'
+                    : 'לוח בקרה'}
             </h2>
           </header>
           

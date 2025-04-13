@@ -14,48 +14,80 @@ interface YnetArticle {
 }
 
 export default function YnetPage() {
+  // Define component state variables
   const [articles, setArticles] = useState<YnetArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Wrap the entire effect in a try-catch to prevent any uncaught errors
-    try {
-      async function fetchArticles() {
-        try {
-          setLoading(true);
-          const response = await fetch('/api/ynet');
-
-          if (!response.ok) {
-            throw new Error('Failed to fetch Ynet articles');
-          }
-
-          const data = await response.json();
-          setArticles(data);
-        } catch (err) {
-          console.error('Error fetching Ynet articles:', err);
-          setError('אירעה שגיאה בטעינת הכתבות');
-        } finally {
-          setLoading(false);
-        }
-      }
-
-      fetchArticles();
-    } catch (error) {
-      console.error('Unexpected error in YnetPage component:', error);
-      setError('אירעה שגיאה לא צפויה');
-      setLoading(false);
-    }
-  }, []);
-
+  // Safely format dates with error handling
   const formatDate = (dateStr: string) => {
+    if (!dateStr) return 'תאריך לא זמין';
+    
     try {
       return format(new Date(dateStr), 'dd.MM.yyyy');
     } catch (error) {
+      console.error('Date formatting error:', error);
       return 'תאריך לא תקין';
     }
   };
 
+  // Fetch articles on component mount
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchArticles = async () => {
+      if (!isMounted) return;
+      
+      try {
+        setLoading(true);
+        
+        const response = await fetch('/api/ynet', {
+          method: 'GET',
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        });
+
+        if (!isMounted) return;
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch Ynet articles: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (!isMounted) return;
+        
+        setArticles(Array.isArray(data) ? data : []);
+        setError(null);
+      } catch (err) {
+        if (!isMounted) return;
+        
+        console.error('Error fetching Ynet articles:', err);
+        setError('אירעה שגיאה בטעינת הכתבות. נסו שוב מאוחר יותר.');
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    // Execute fetch and handle errors
+    fetchArticles().catch(err => {
+      if (isMounted) {
+        console.error('Unexpected error in fetchArticles:', err);
+        setError('אירעה שגיאה לא צפויה');
+        setLoading(false);
+      }
+    });
+
+    // Cleanup function
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Render component
   return (
     <>
       {/* Header Banner - Full Width */}
@@ -78,6 +110,7 @@ export default function YnetPage() {
           </div>
         </div>
 
+        {/* Content conditionally rendered based on loading/error state */}
         {loading ? (
           <div className="flex justify-center">
             <Loader size="medium" />
@@ -86,7 +119,7 @@ export default function YnetPage() {
           <div className="bg-red-50 p-4 rounded-lg text-red-700 text-center">
             {error}
           </div>
-        ) : articles.length === 0 ? (
+        ) : !articles || articles.length === 0 ? (
           <div className="bg-gray-50 p-8 rounded-lg text-center">
             <p className="text-lg text-gray-600">
               אין כרגע כתבות Ynet.
@@ -95,7 +128,7 @@ export default function YnetPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10 mb-16" dir="rtl">
             {articles.map((article) => (
-              <div key={article._id} className="flex flex-col bg-white rounded-xl shadow-md overflow-hidden border border-black border-2">
+              <div key={article._id || `ynet-${Math.random()}`} className="flex flex-col bg-white rounded-xl shadow-md overflow-hidden border border-black border-2">
                 {/* YNET Logo */}
                 <div className="flex justify-center py-4 bg-gray-200">
                   <img 
@@ -108,7 +141,7 @@ export default function YnetPage() {
                 {/* Article Content */}
                 <div className="p-6 flex flex-col flex-grow">
                   <h2 className="text-xl font-bold text-[#002F42] mb-3 hover:text-[#32a191] transition-colors">
-                    {article.title}
+                    {article.title || 'כותרת לא זמינה'}
                   </h2>
                   <div className="mb-4 text-gray-500 text-sm">
                     <span className="inline-block">
@@ -116,14 +149,20 @@ export default function YnetPage() {
                     </span>
                   </div>
                   <div className="mt-auto">
-                    <Link 
-                      href={article.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block bg-[#32a191] text-white px-4 py-2 rounded-lg hover:bg-[#002F42] transition-colors text-sm font-medium"
-                    >
-                      קראו עוד
-                    </Link>
+                    {article.link ? (
+                      <Link 
+                        href={article.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block bg-[#32a191] text-white px-4 py-2 rounded-lg hover:bg-[#002F42] transition-colors text-sm font-medium"
+                      >
+                        קראו עוד
+                      </Link>
+                    ) : (
+                      <span className="inline-block bg-gray-400 text-white px-4 py-2 rounded-lg text-sm font-medium cursor-not-allowed">
+                        קישור לא זמין
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

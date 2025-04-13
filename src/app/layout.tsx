@@ -3,9 +3,16 @@ import "@/app/globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
-import TradingViewTicker from "@/components/TradingViewTicker";
+import dynamic from 'next/dynamic';
 import { Providers } from "./providers";
 import { Assistant } from "next/font/google";
+
+// Dynamically import TradingViewTicker with SSR disabled
+// This prevents any window/document references during SSR
+const TradingViewTicker = dynamic(
+  () => import("@/components/TradingViewTicker"),
+  { ssr: false }
+);
 
 const assistant = Assistant({
   subsets: ["latin", "hebrew"],

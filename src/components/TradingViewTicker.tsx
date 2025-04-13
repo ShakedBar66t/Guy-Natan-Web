@@ -8,62 +8,88 @@ export default function TradingViewTicker() {
   const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
-    // Check if we're on a mobile device
-    const isMobile = window.innerWidth < 768;
-    
-    // Only set to render if we're on a desktop
-    setShouldRender(!isMobile);
-    
-    // Don't continue with setup if on mobile
-    if (isMobile) return;
+    try {
+      // Safety check - don't continue if window is not defined (SSR)
+      if (typeof window === 'undefined') return;
+      
+      // Check if we're on a mobile device
+      const isMobile = window.innerWidth < 768;
+      
+      // Only set to render if we're on a desktop
+      setShouldRender(!isMobile);
+      
+      // Don't continue with setup if on mobile
+      if (isMobile) return;
 
-    // Ensure the widget is positioned at the top after it loads
-    const adjustWidget = () => {
-      const widgetIframe = document.getElementById("tradingview-widget-ticker-tape");
-      if (widgetIframe) {
-        const parentElement = widgetIframe.parentElement;
-        if (parentElement) {
-          parentElement.style.position = "fixed";
-          parentElement.style.top = "0";
-          parentElement.style.left = "0";
-          parentElement.style.width = "100%";
-          parentElement.style.zIndex = "50"; // Lower z-index so it doesn't block the header
-          
-          // IMPORTANT: Modify these lines to force body scrolling
-          document.documentElement.style.overflow = "auto";
-          document.body.style.overflow = "auto";
-          document.body.style.height = "auto";
-          document.body.style.position = "static";
+      // Ensure the widget is positioned at the top after it loads
+      const adjustWidget = () => {
+        try {
+          const widgetIframe = document.getElementById("tradingview-widget-ticker-tape");
+          if (widgetIframe) {
+            const parentElement = widgetIframe.parentElement;
+            if (parentElement) {
+              parentElement.style.position = "fixed";
+              parentElement.style.top = "0";
+              parentElement.style.left = "0";
+              parentElement.style.width = "100%";
+              parentElement.style.zIndex = "50"; // Lower z-index so it doesn't block the header
+              
+              // IMPORTANT: Modify these lines to force body scrolling
+              document.documentElement.style.overflow = "auto";
+              document.body.style.overflow = "auto";
+              document.body.style.height = "auto";
+              document.body.style.position = "static";
+            }
+          }
+        } catch (error) {
+          console.error("Error adjusting TradingView widget:", error);
         }
-      }
-    };
+      };
 
-    // Run once on component mount
-    adjustWidget();
-    
-    // Also run after a delay to ensure the widget has loaded
-    const timeoutId = setTimeout(adjustWidget, 1000);
-    
-    // Handle resize events
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setShouldRender(false);
-      } else {
-        setShouldRender(true);
-        // Re-adjust the widget when going from mobile to desktop
-        setTimeout(adjustWidget, 100);
+      // Run once on component mount
+      adjustWidget();
+      
+      // Also run after a delay to ensure the widget has loaded
+      const timeoutId = setTimeout(adjustWidget, 1000);
+      
+      // Handle resize events
+      const handleResize = () => {
+        try {
+          if (window.innerWidth < 768) {
+            setShouldRender(false);
+          } else {
+            setShouldRender(true);
+            // Re-adjust the widget when going from mobile to desktop
+            setTimeout(adjustWidget, 100);
+          }
+        } catch (error) {
+          console.error("Error in TradingView resize handler:", error);
+        }
+      };
+      
+      // Safely add event listener
+      try {
+        window.addEventListener('resize', handleResize);
+      } catch (error) {
+        console.error("Error adding resize listener:", error);
       }
-    };
-    
-    window.addEventListener('resize', handleResize);
-    
-    return () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener('resize', handleResize);
-    };
+      
+      return () => {
+        // Clean up
+        clearTimeout(timeoutId);
+        try {
+          window.removeEventListener('resize', handleResize);
+        } catch (error) {
+          console.error("Error removing resize listener:", error);
+        }
+      };
+    } catch (error) {
+      console.error("Error in TradingViewTicker useEffect:", error);
+      return () => {}; // Empty cleanup function
+    }
   }, []);
 
-  // If we shouldn't render, return null (nothing)
+  // Safety check - if there's any error or we shouldn't render, return null
   if (!shouldRender) {
     return null;
   }

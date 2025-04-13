@@ -1,5 +1,6 @@
 // TradingViewTicker.tsx
-"use client";
+'use client'; // This directive must be the first line
+
 import Script from "next/script";
 import { useEffect, useState } from "react";
 

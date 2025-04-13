@@ -19,26 +19,33 @@ export default function YnetPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchArticles() {
-      try {
-        setLoading(true);
-        const response = await fetch('/api/ynet');
+    // Wrap the entire effect in a try-catch to prevent any uncaught errors
+    try {
+      async function fetchArticles() {
+        try {
+          setLoading(true);
+          const response = await fetch('/api/ynet');
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch Ynet articles');
+          if (!response.ok) {
+            throw new Error('Failed to fetch Ynet articles');
+          }
+
+          const data = await response.json();
+          setArticles(data);
+        } catch (err) {
+          console.error('Error fetching Ynet articles:', err);
+          setError('אירעה שגיאה בטעינת הכתבות');
+        } finally {
+          setLoading(false);
         }
-
-        const data = await response.json();
-        setArticles(data);
-      } catch (err) {
-        console.error('Error fetching Ynet articles:', err);
-        setError('אירעה שגיאה בטעינת הכתבות');
-      } finally {
-        setLoading(false);
       }
-    }
 
-    fetchArticles();
+      fetchArticles();
+    } catch (error) {
+      console.error('Unexpected error in YnetPage component:', error);
+      setError('אירעה שגיאה לא צפויה');
+      setLoading(false);
+    }
   }, []);
 
   const formatDate = (dateStr: string) => {

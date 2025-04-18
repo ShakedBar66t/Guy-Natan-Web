@@ -33,10 +33,9 @@ export default function AdminButton() {
       });
       const data = await response.json();
       
-      console.log('Admin verification response:', data);
       setIsAdmin(data.isAdmin);
     } catch (error) {
-      console.error('Error checking admin status:', error);
+      logger.error('Error checking admin status:', error);
       setIsAdmin(false);
     } finally {
       setLoading(false);

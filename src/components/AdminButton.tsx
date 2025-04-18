@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import logger from '@/utils/logger';
 
 export default function AdminButton() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -41,8 +42,6 @@ export default function AdminButton() {
       setLoading(false);
     }
   }
-
-  console.log('AdminButton rendering, isAdmin:', isAdmin, 'loading:', loading);
 
   // Don't show anything if loading or not admin
   if (loading || !isAdmin) {

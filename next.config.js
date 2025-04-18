@@ -16,6 +16,26 @@ const nextConfig = {
         destination: '/admin/dashboard/blog/new',
         permanent: true,
       },
+      {
+        source: '/services',
+        destination: '/',
+        permanent: false,
+      },
+      {
+        source: '/faq',
+        destination: '/qna',
+        permanent: false,
+      },
+      {
+        source: '/terms',
+        destination: '/',
+        permanent: false,
+      },
+      {
+        source: '/accessibility',
+        destination: '/',
+        permanent: false,
+      }
     ];
   },
 };

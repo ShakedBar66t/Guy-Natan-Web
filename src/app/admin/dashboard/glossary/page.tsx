@@ -30,6 +30,10 @@ export default function GlossaryManagementPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  // Get the API key - fallback to a hardcoded value if env var is not available
+  // This ensures we always have a valid key
+  const API_KEY = process.env.NEXT_PUBLIC_TINYMCE_API_KEY || 'jgw7r4whf2iiqa7myirz951f62c1zn9gj77q7i0vfj6pcfyi';
+
   // Fetch terms on component mount
   useEffect(() => {
     async function fetchTerms() {
@@ -343,7 +347,7 @@ export default function GlossaryManagementPage() {
                 <Editor
                   initialValue={formData.definition}
                   onEditorChange={handleEditorChange}
-                  apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+                  apiKey={API_KEY}
                   init={{
                     height: 300,
                     menubar: true,
@@ -358,6 +362,7 @@ export default function GlossaryManagementPage() {
                       'removeformat | link | help | ltr rtl',
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
                     directionality: 'rtl', // Default to RTL for Hebrew content
+                    promotion: false, // Disable TinyMCE promotions
                   }}
                 />
               </div>

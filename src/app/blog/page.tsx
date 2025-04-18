@@ -8,6 +8,7 @@ import { he } from 'date-fns/locale';
 import Glossary from '@/components/Glossary';
 import Loader from '@/components/Loader';
 import { useSearchParams, useRouter } from 'next/navigation';
+import logger from '@/utils/logger';
 
 interface BlogPost {
   _id: string;
@@ -68,7 +69,7 @@ function BlogContent() {
         const data = await response.json();
         setBlogPosts(data);
       } catch (err) {
-        console.error('Error fetching blog posts:', err);
+        logger.error('Error fetching blog posts:', err);
         setError('אירעה שגיאה בטעינת המאמרים. נסה שוב מאוחר יותר.');
       } finally {
         setLoading(false);

@@ -20,6 +20,10 @@ export default function Editor({ initialValue = '', onChange, height = 500 }: Ed
   const editorRef = useRef<any>(null);
   const [terms, setTerms] = useState<FinancialTerm[]>([]);
 
+  // Get the API key - fallback to a hardcoded value if env var is not available
+  // This ensures we always have a valid key
+  const API_KEY = process.env.NEXT_PUBLIC_TINYMCE_API_KEY || 'jgw7r4whf2iiqa7myirz951f62c1zn9gj77q7i0vfj6pcfyi';
+
   // Fetch financial terms when the component mounts
   useEffect(() => {
     async function fetchTerms() {
@@ -40,10 +44,10 @@ export default function Editor({ initialValue = '', onChange, height = 500 }: Ed
 
   return (
     <TinyMCEEditor
-      apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+      apiKey={API_KEY}
       onInit={(evt, editor) => {
         editorRef.current = editor;
-
+        
         // Add a custom button and menu for inserting financial term links
         if (terms.length > 0) {
           // Register a custom menu item
@@ -74,7 +78,6 @@ export default function Editor({ initialValue = '', onChange, height = 500 }: Ed
         }
       }}
       initialValue={initialValue}
-      onEditorChange={(content) => onChange(content)}
       init={{
         height,
         menubar: true,
@@ -93,7 +96,10 @@ export default function Editor({ initialValue = '', onChange, height = 500 }: Ed
         `,
         directionality: 'rtl', // Default to RTL for Hebrew content
         language: 'he', // Set language to Hebrew
+        readonly: false, // Ensure editor is not read-only
+        promotion: false, // Disable TinyMCE promotions
       }}
+      onEditorChange={onChange}
     />
   );
 } 

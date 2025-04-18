@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
+import logger from '@/utils/logger';
 
 export default function DashboardLayout({
   children,
@@ -23,12 +24,12 @@ export default function DashboardLayout({
       });
       
       if (response.ok) {
-        console.log('Logout successful, refreshing page');
+        logger.log('Logout successful, refreshing page');
         // Use window.location instead of router for a full page refresh
         window.location.href = '/';
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      logger.error('Logout error:', error);
       setIsLoggingOut(false);
     }
   }

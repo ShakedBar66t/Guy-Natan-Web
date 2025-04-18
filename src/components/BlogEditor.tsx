@@ -29,6 +29,9 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
   const router = useRouter();
   const editorRef = useRef<any>(null);
   
+  // Get the API key - fallback to a hardcoded value if env var is not available
+  const API_KEY = process.env.NEXT_PUBLIC_TINYMCE_API_KEY || 'jgw7r4whf2iiqa7myirz951f62c1zn9gj77q7i0vfj6pcfyi';
+  
   const [formData, setFormData] = useState<BlogPost>({
     title: post?.title || '',
     content: post?.content || '',
@@ -272,7 +275,7 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
           </label>
           <div className="mt-1">
             <Editor
-              apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+              apiKey={API_KEY}
               onInit={(evt, editor) => editorRef.current = editor}
               initialValue={formData.content}
               onEditorChange={handleEditorChange}
@@ -289,6 +292,8 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
                   'bullist numlist outdent indent | removeformat | help | ltr rtl',
                 content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
                 directionality: 'rtl',
+                readonly: false,
+                promotion: false,
               }}
             />
           </div>

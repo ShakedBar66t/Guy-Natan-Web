@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Loader from '@/components/Loader';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -55,8 +56,8 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-lg font-medium text-gray-600">טוען את לוח הבקרה...</div>
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <Loader text="טוען את לוח הבקרה..." />
       </div>
     );
   }

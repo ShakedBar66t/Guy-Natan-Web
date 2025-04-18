@@ -6,6 +6,7 @@ import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
+import Loader from '@/components/Loader';
 
 interface BlogPost {
   _id: string;
@@ -73,11 +74,9 @@ export default function BlogPostPage() {
 
   if (loading) {
     return (
-      <MaxWidthWrapper>
-        <div className="py-12 text-center">
-          <div className="text-2xl font-medium text-gray-600">טוען מאמר...</div>
-        </div>
-      </MaxWidthWrapper>
+      <div className="w-full flex justify-center items-center min-h-[50vh]">
+        <Loader text="טוען מאמר..." size="large" />
+      </div>
     );
   }
 

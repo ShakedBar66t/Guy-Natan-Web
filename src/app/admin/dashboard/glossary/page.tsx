@@ -417,10 +417,20 @@ export default function GlossaryManagementPage() {
                 
                 <button
                   type="submit"
-                  disabled={isSaving}
-                  className={`${isSaving ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'} text-white px-4 py-2 rounded-lg transition`}
+                  disabled={isSaving || !formData.term || !formData.definition}
+                  className={`px-6 py-2 rounded-md text-white font-medium ${
+                    !isSaving && formData.term && formData.definition
+                      ? 'bg-blue-600 hover:bg-blue-700'
+                      : 'bg-gray-400 cursor-not-allowed'
+                  }`}
                 >
-                  {isSaving ? 'שומר...' : (selectedTerm ? 'עדכן מונח' : 'הוסף מונח')}
+                  {isSaving ? (
+                    <div className="flex justify-center items-center">
+                      <Loader text={null} size="small" className="my-0" />
+                    </div>
+                  ) : (
+                    selectedTerm ? 'עדכן מונח' : 'הוסף מונח'
+                  )}
                 </button>
               </div>
             </form>

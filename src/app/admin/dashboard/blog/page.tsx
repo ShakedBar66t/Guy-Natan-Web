@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import Loader from '@/components/Loader';
 
 interface BlogPost {
   _id: string;
@@ -101,8 +102,8 @@ export default function BlogManagement() {
 
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-lg font-medium text-gray-600">טוען מאמרים...</div>
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <Loader text="טוען מאמרים..." />
       </div>
     );
   }

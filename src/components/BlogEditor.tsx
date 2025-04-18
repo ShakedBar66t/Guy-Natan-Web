@@ -3,6 +3,7 @@
 import { useState, useRef, ChangeEvent } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { useRouter } from 'next/navigation';
+import Loader from './Loader';
 
 interface BlogPost {
   _id?: string;
@@ -309,10 +310,20 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
           </button>
           <button
             type="submit"
-            disabled={loading}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+            className={`px-6 py-2 rounded-md text-white font-medium ${
+              formData.title && formData.content
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-gray-400 cursor-not-allowed'
+            }`}
+            disabled={loading || !formData.title || !formData.content}
           >
-            {loading ? 'שומר...' : isEditing ? 'עדכן מאמר' : 'צור מאמר'}
+            {loading ? (
+              <div className="flex justify-center items-center">
+                <Loader text={null} size="small" className="my-0" />
+              </div>
+            ) : (
+              isEditing ? 'עדכן מאמר' : 'צור מאמר'
+            )}
           </button>
         </div>
       </form>

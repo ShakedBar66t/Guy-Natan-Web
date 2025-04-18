@@ -5,9 +5,16 @@ import React from 'react';
 interface LoaderProps {
   fullScreen?: boolean;
   size?: 'small' | 'medium' | 'large';
+  text?: string | null;
+  className?: string;
 }
 
-export default function Loader({ fullScreen = false, size = 'medium' }: LoaderProps) {
+export default function Loader({ 
+  fullScreen = false, 
+  size = 'medium', 
+  text = 'טוען נתונים...', 
+  className = '' 
+}: LoaderProps) {
   // Set size based on the prop
   const sizeClass = {
     small: 'w-16 h-16',
@@ -17,15 +24,18 @@ export default function Loader({ fullScreen = false, size = 'medium' }: LoaderPr
 
   // Create the loader content
   const loaderContent = (
-    <div className="flex flex-col items-center justify-center">
-      <div className={`${sizeClass} animate-spin-slow relative`}>
+    <div className={`flex flex-col items-center justify-center ${className}`}>
+      <div className={`${sizeClass} relative`}>
         <img
           src="https://res.cloudinary.com/drld1bejg/image/upload/v1743255601/GuyNatanLogo-removebg-preview_atdnde.png"
           alt="Loading..."
-          className="w-full h-full object-contain"
+          className="w-full h-full object-contain animate-spin-slow"
+          style={{ animationDuration: '3s' }}
         />
       </div>
-      <p className="mt-4 text-[#002F42] font-medium animate-pulse">טוען נתונים...</p>
+      {text && (
+        <p className="mt-4 text-[#002F42] font-medium animate-pulse">{text}</p>
+      )}
     </div>
   );
 

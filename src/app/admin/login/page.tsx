@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Loader from '@/components/Loader';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -91,9 +92,15 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+            className="w-full bg-blue-600 text-white rounded-md py-3 font-medium hover:bg-blue-700 transition-colors disabled:bg-blue-400"
           >
-            {loading ? 'מתחבר...' : 'התחבר'}
+            {loading ? (
+              <div className="flex justify-center items-center">
+                <Loader text={null} size="small" className="my-0" />
+              </div>
+            ) : (
+              'התחבר'
+            )}
           </button>
         </form>
         

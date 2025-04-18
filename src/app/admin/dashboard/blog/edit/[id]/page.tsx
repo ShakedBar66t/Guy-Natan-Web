@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import BlogEditor from '@/components/BlogEditor';
+import Loader from '@/components/Loader';
 
 interface BlogPost {
   _id: string;
@@ -45,8 +46,8 @@ export default function EditBlogPost() {
 
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-lg font-medium text-gray-600">Loading post...</div>
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <Loader text="טוען מאמר..." />
       </div>
     );
   }

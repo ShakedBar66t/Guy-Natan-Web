@@ -33,29 +33,30 @@ export async function POST(request: NextRequest) {
       data.relatedTerms = [];
     }
     
-    // Create a unique slug if not provided
+    // Handle slug creation/validation - ensure it's never empty or just "-"
+    let slugToUse = '';
+    
     if (!data.slug || data.slug.trim() === '-' || data.slug.trim() === '') {
       // If title is empty or only has special characters, use a timestamp
       const titleForSlug = data.title && data.title.trim() ? data.title : `post-${Date.now()}`;
       
-      data.slug = titleForSlug
+      slugToUse = titleForSlug
         .toLowerCase()
         .replace(/[^\w\s-]/gi, '') // Remove special chars except hyphens
         .replace(/\s+/g, '-')      // Replace spaces with dashes
         .replace(/-+/g, '-')       // Replace multiple hyphens with a single one
-        .trim('-');                // Trim leading/trailing hyphens
-      
-      // If slug is empty after all replacements, use a timestamp
-      if (!data.slug || data.slug === '-' || data.slug === '') {
-        data.slug = `post-${Date.now()}`;
-      }
-      
-      // Check if slug already exists
-      const existingSlug = await BlogPost.findOne({ slug: data.slug });
-      if (existingSlug) {
-        data.slug = `${data.slug}-${Date.now()}`;
-      }
+        .replace(/^-|-$/g, '');    // Trim leading/trailing hyphens
+    } else {
+      slugToUse = data.slug.trim();
     }
+    
+    // If slug is empty or just "-" after all replacements, use a timestamp
+    if (!slugToUse || slugToUse === '-' || slugToUse === '') {
+      slugToUse = `post-${Date.now()}`;
+    }
+    
+    // Always add a timestamp to ensure uniqueness
+    data.slug = `${slugToUse}-${Date.now()}`;
     
     // Set published date if published
     if (data.isPublished) {

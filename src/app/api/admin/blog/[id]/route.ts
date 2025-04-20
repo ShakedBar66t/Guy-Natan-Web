@@ -10,7 +10,8 @@ export async function GET(
   try {
     await dbConnect();
     
-    const { id } = params;
+    // Extract id from params
+    const id = params.id;
     
     const blogPost = await BlogPost.findById(id)
       .populate({ path: 'relatedTerms', strictPopulate: false })

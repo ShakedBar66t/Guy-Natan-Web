@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import BlogPost from '@/models/BlogPost';
+import '@/models/FinancialTerm'; // Import to ensure model is registered
 
 // Get a single blog post by ID
 export async function GET(
@@ -42,7 +43,7 @@ export async function PATCH(
   try {
     await dbConnect();
     
-    const { id } = params;
+    const id = params.id;
     const data = await request.json();
     
     // Handle slug updates

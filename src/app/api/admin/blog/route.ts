@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import BlogPost from '@/models/BlogPost';
+import '@/models/FinancialTerm'; // Import to ensure model is registered
 
-// Get all blog posts
+// Get all blog posts for admin
 export async function GET() {
   try {
     await dbConnect();
     
     const blogPosts = await BlogPost.find({})
-      .sort({ createdAt: -1 }) // Sort by newest first
-      .lean(); // Convert to plain JavaScript objects
+      .populate({ path: 'relatedTerms', strictPopulate: false })
+      .sort({ createdAt: -1 })
+      .lean();
     
     return NextResponse.json(blogPosts, { status: 200 });
   } catch (error) {

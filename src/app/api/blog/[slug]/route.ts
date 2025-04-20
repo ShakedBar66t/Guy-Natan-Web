@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import BlogPost from '@/models/BlogPost';
+import '@/models/FinancialTerm'; // Import to ensure model is registered
 
 interface Params {
   params: {

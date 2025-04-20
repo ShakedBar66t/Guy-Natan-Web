@@ -23,10 +23,13 @@ export async function GET(request: NextRequest, context: Params) {
     }
     
     // Find the blog post by slug and ensure it's published
+    // Use populate to include related terms data
     const blogPost = await BlogPost.findOne({ 
       slug,
       isPublished: true
-    }).lean();
+    })
+    .populate({ path: 'relatedTerms', strictPopulate: false })
+    .lean();
     
     if (!blogPost) {
       return NextResponse.json(

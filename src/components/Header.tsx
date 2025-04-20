@@ -25,7 +25,7 @@ export default function Header() {
   const navLinks = [
     { href: "/", label: "עמוד הבית" },
     { href: "#", label: "נתחיל מכאן", isDropdown: true },
-    { href: "/services", label: "מרוצים וממליצים" },
+    { href: "/testimonials", label: "מרוצים וממליצים" },
     { href: "/qna", label: "שאלות תשובות" },
     { href: "/contact", label: "בואו נדבר" },
   ];

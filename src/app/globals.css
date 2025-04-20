@@ -27,3 +27,87 @@ html, body {
     z-index: 10000;
   }
 }
+
+/* Custom Swiper Carousel Styles */
+.testimonials-swiper {
+  padding-bottom: 60px !important;
+}
+
+.testimonials-swiper .swiper-button-next,
+.testimonials-swiper .swiper-button-prev {
+  color: #022E41;
+  background: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.testimonials-swiper .swiper-button-next:after,
+.testimonials-swiper .swiper-button-prev:after {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.testimonials-swiper .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: #022E41;
+  opacity: 0.5;
+}
+
+.testimonials-swiper .swiper-pagination-bullet-active {
+  opacity: 1;
+  background: #022E41;
+  width: 12px;
+  height: 12px;
+}
+
+/* Testimonial video card styles */
+.testimonials-swiper .swiper-slide {
+  transition: transform 0.3s ease;
+}
+
+.testimonials-swiper .swiper-slide:hover {
+  transform: translateY(-5px);
+}
+
+/* Custom border for testimonial videos */
+.testimonials-swiper .swiper-slide .border-3 {
+  border-width: 3px !important;
+}
+
+@media (max-width: 768px) {
+  .testimonials-swiper .swiper-button-next,
+  .testimonials-swiper .swiper-button-prev {
+    display: none;
+  }
+}
+
+/* Testimonials Page Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.testimonials-grid-item {
+  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.testimonials-grid-item:nth-child(1) { animation-delay: 0.1s; }
+.testimonials-grid-item:nth-child(2) { animation-delay: 0.2s; }
+.testimonials-grid-item:nth-child(3) { animation-delay: 0.3s; }
+.testimonials-grid-item:nth-child(4) { animation-delay: 0.4s; }
+.testimonials-grid-item:nth-child(5) { animation-delay: 0.5s; }
+.testimonials-grid-item:nth-child(6) { animation-delay: 0.6s; }
+
+/* Modal animation */
+.testimonial-modal {
+  animation: modalFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

@@ -96,7 +96,7 @@ export default function AdminLogin() {
           >
             {loading ? (
               <div className="flex justify-center items-center">
-                <Loader text={null} size="small" className="my-0" />
+                <Loader text={null} size="small" className="my-0" type="spinner" />
               </div>
             ) : (
               'התחבר'

@@ -28,12 +28,27 @@ export async function POST(request: NextRequest) {
     
     const data = await request.json();
     
+    // Ensure relatedTerms is an array
+    if (!data.relatedTerms) {
+      data.relatedTerms = [];
+    }
+    
     // Create a unique slug if not provided
-    if (!data.slug) {
-      data.slug = data.title
+    if (!data.slug || data.slug.trim() === '-' || data.slug.trim() === '') {
+      // If title is empty or only has special characters, use a timestamp
+      const titleForSlug = data.title && data.title.trim() ? data.title : `post-${Date.now()}`;
+      
+      data.slug = titleForSlug
         .toLowerCase()
-        .replace(/[^\w\s]/gi, '')  // Remove special chars
-        .replace(/\s+/g, '-');     // Replace spaces with dashes
+        .replace(/[^\w\s-]/gi, '') // Remove special chars except hyphens
+        .replace(/\s+/g, '-')      // Replace spaces with dashes
+        .replace(/-+/g, '-')       // Replace multiple hyphens with a single one
+        .trim('-');                // Trim leading/trailing hyphens
+      
+      // If slug is empty after all replacements, use a timestamp
+      if (!data.slug || data.slug === '-' || data.slug === '') {
+        data.slug = `post-${Date.now()}`;
+      }
       
       // Check if slug already exists
       const existingSlug = await BlogPost.findOne({ slug: data.slug });
@@ -49,7 +64,12 @@ export async function POST(request: NextRequest) {
     
     const blogPost = await BlogPost.create(data);
     
-    return NextResponse.json(blogPost, { status: 201 });
+    // Populate the related terms in the response
+    const populatedBlogPost = await BlogPost.findById(blogPost._id)
+      .populate({ path: 'relatedTerms', strictPopulate: false })
+      .lean();
+    
+    return NextResponse.json(populatedBlogPost, { status: 201 });
   } catch (error) {
     console.error('Error creating blog post:', error);
     return NextResponse.json(

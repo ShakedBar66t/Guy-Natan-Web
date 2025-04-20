@@ -20,7 +20,7 @@ const programs = [
     title: 'פגישה אישית',
     description: 'אפיון ומעבר על כל המוצרים הפיננסים ו/או בניית תמהיל תיק ממוקד.',
     cta: 'זה מתאים לי',
-    href: '/contact?program=personal',
+    href: 'https://api.whatsapp.com/send/?phone=552655305&text=%D7%94%D7%99%D7%99+%D7%92%D7%99%D7%90%2C+%D7%90%D7%A9%D7%9E%D7%97+%D7%9C%D7%A4%D7%A8%D7%98%D7%99%D7%9D+%D7%A2%D7%9C+%D7%94%D7%AA%D7%95%D7%9B%D7%A0%D7%99%D7%AA+%D7%9C%D7%99%D7%95%D7%95%D7%99+%D7%A9%D7%9C%D7%9A&type=phone_number&app_absent=0',
     icon: FaHandshake
   },
   {
@@ -28,7 +28,7 @@ const programs = [
     title: 'המשקיע הת׳כלסי',
     description: 'תכנית יעילה וממוקדת, סדר בהשקעות טווח קצר וארוך, מינמום התעסקות ביום יום.',
     cta: 'הגיע הזמן',
-    href: '/contact?program=personal',
+    href: 'https://api.whatsapp.com/send/?phone=552655305&text=%D7%94%D7%99%D7%99+%D7%92%D7%99%D7%90%2C+%D7%90%D7%A9%D7%9E%D7%97+%D7%9C%D7%A4%D7%A8%D7%98%D7%99%D7%9D+%D7%A2%D7%9C+%D7%94%D7%AA%D7%95%D7%9B%D7%A0%D7%99%D7%AA+%D7%9C%D7%99%D7%95%D7%95%D7%99+%D7%A9%D7%9C%D7%9A&type=phone_number&app_absent=0',
     icon: FaChartLine
   },
   {
@@ -36,7 +36,7 @@ const programs = [
     title: 'הזוג המשקיע',
     description: 'התכנית שמתכננת תקציב משק בית חכם, מלמדת איך לעקוב באמת אחר ההוצאות החודשיות, לשפר תזרים מזומנים, להקטיין חובות, ליצור הון משפחתי לשקט בטווח הרחוק.אפיון ומעבר על כל המוצרים הפיננסים ו/או בניית תמהיל תיק ממוקד.',
     cta: 'אנחנו צריכים את זה',
-    href: '/contact?program=personal',
+    href: 'https://api.whatsapp.com/send/?phone=552655305&text=%D7%94%D7%99%D7%99+%D7%92%D7%99%D7%90%2C+%D7%90%D7%A9%D7%9E%D7%97+%D7%9C%D7%A4%D7%A8%D7%98%D7%99%D7%9D+%D7%A2%D7%9C+%D7%94%D7%AA%D7%95%D7%9B%D7%A0%D7%99%D7%AA+%D7%9C%D7%99%D7%95%D7%95%D7%99+%D7%A9%D7%9C%D7%9A&type=phone_number&app_absent=0',
     icon: FaUsers
   },
   {
@@ -44,7 +44,7 @@ const programs = [
     title: 'העסק הרווחי',
     description: 'התוכנית שעושה ניתוח פיננסי מקיף, מעבר על דו״חות רווח והפסד, כרטסת, שיפור וייעול שולי הרווח ובעיקר מלמדת איך לקחת את המושכות ולהיות בעל עסק בראש שקט.',
     cta: 'אני מחכה לזה',
-    href: '/contact?program=personal',
+    href: 'https://api.whatsapp.com/send/?phone=552655305&text=%D7%94%D7%99%D7%99+%D7%92%D7%99%D7%90%2C+%D7%90%D7%A9%D7%9E%D7%97+%D7%9C%D7%A4%D7%A8%D7%98%D7%99%D7%9D+%D7%A2%D7%9C+%D7%94%D7%AA%D7%95%D7%9B%D7%A0%D7%99%D7%AA+%D7%9C%D7%99%D7%95%D7%95%D7%99+%D7%A9%D7%9C%D7%9A&type=phone_number&app_absent=0',
     icon: FaBuilding
   },
   {
@@ -52,7 +52,7 @@ const programs = [
     title: 'המשקיע האקטיבי',
     description: 'תכנית שתאפשר לכם לנתח מגמות בשוק ההון, כולל כל מה שנלמד ב״משקיע הת׳כלסי״, אבל כאלה שמוכנים ל- Next-Step בעולם המסחר האקטיבי.',
     cta: 'זה בדיוק אני',
-    href: '/contact?program=personal',
+    href: 'https://api.whatsapp.com/send/?phone=552655305&text=%D7%94%D7%99%D7%99+%D7%92%D7%99%D7%90%2C+%D7%90%D7%A9%D7%9E%D7%97+%D7%9C%D7%A4%D7%A8%D7%98%D7%99%D7%9D+%D7%A2%D7%9C+%D7%94%D7%AA%D7%95%D7%9B%D7%A0%D7%99%D7%AA+%D7%9C%D7%99%D7%95%D7%95%D7%99+%D7%A9%D7%9C%D7%9A&type=phone_number&app_absent=0',
     icon: FaRegChartBar
   },
   {
@@ -60,7 +60,7 @@ const programs = [
     title: 'תוכנית פרימיום',
     description: 'פתוחה רק לבוגרי מסלול ליווי להשקעות ומסלול שוק ההון.',
     cta: 'דרך שירות לקוחות',
-    href: '/contact?program=personal',
+    href: 'https://api.whatsapp.com/send/?phone=552655305&text=%D7%94%D7%99%D7%99+%D7%92%D7%99%D7%90%2C+%D7%90%D7%A9%D7%9E%D7%97+%D7%9C%D7%A4%D7%A8%D7%98%D7%99%D7%9D+%D7%A2%D7%9C+%D7%94%D7%AA%D7%95%D7%9B%D7%A0%D7%99%D7%AA+%D7%9C%D7%99%D7%95%D7%95%D7%99+%D7%A9%D7%9C%D7%9A&type=phone_number&app_absent=0',
     icon: FaCrown
   },
 ];

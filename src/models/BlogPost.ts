@@ -12,6 +12,7 @@ export interface IBlogPost extends Document {
   updatedAt: Date;
   category?: string;
   level?: string;
+  relatedTerms?: string[]; // Array of term IDs
 }
 
 const BlogPostSchema: Schema = new Schema(
@@ -48,6 +49,10 @@ const BlogPostSchema: Schema = new Schema(
     },
     level: {
       type: String,
+    },
+    relatedTerms: {
+      type: [{ type: Schema.Types.ObjectId, ref: 'FinancialTerm' }],
+      default: [],
     },
   },
   {

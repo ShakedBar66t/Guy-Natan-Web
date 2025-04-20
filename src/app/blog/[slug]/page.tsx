@@ -8,6 +8,13 @@ import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
 import Loader from '@/components/Loader';
 
+interface FinancialTerm {
+  _id: string;
+  term: string;
+  slug: string;
+  definition: string;
+}
+
 interface BlogPost {
   _id: string;
   title: string;
@@ -21,6 +28,7 @@ interface BlogPost {
   updatedAt: string;
   category?: string;
   level?: string;
+  relatedTerms?: FinancialTerm[];
 }
 
 export default function BlogPostPage() {
@@ -152,6 +160,24 @@ export default function BlogPostPage() {
             className="prose prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
+          
+          {/* Related Terms Section */}
+          {post.relatedTerms && post.relatedTerms.length > 0 && (
+            <div className="mt-10 pt-8 border-t border-gray-200">
+              <h3 className="text-xl font-bold text-[#002F42] mb-4">מושגים פיננסיים קשורים</h3>
+              <div className="flex flex-wrap gap-2">
+                {post.relatedTerms.map(term => (
+                  <Link 
+                    key={term._id} 
+                    href={`/glossary/${term.slug}`}
+                    className="inline-block bg-gray-100 hover:bg-gray-200 text-[#32a191] px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  >
+                    {term.term}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="mt-12 pt-6 border-t border-gray-200">
             <Link 

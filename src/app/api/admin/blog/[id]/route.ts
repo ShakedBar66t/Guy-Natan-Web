@@ -10,7 +10,11 @@ export async function GET(
   try {
     await dbConnect();
     
-    const blogPost = await BlogPost.findById(params.id);
+    const { id } = params;
+    
+    const blogPost = await BlogPost.findById(id)
+      .populate({ path: 'relatedTerms', strictPopulate: false })
+      .lean();
     
     if (!blogPost) {
       return NextResponse.json(
@@ -37,6 +41,7 @@ export async function PATCH(
   try {
     await dbConnect();
     
+    const { id } = params;
     const data = await request.json();
     
     // Handle slug updates
@@ -49,7 +54,7 @@ export async function PATCH(
       // Check if slug already exists and is not the current post
       const existingSlug = await BlogPost.findOne({ 
         slug: data.slug,
-        _id: { $ne: params.id }
+        _id: { $ne: id }
       });
       
       if (existingSlug) {
@@ -59,17 +64,17 @@ export async function PATCH(
     
     // Set published date if being published for the first time
     if (data.isPublished === true) {
-      const currentPost = await BlogPost.findById(params.id);
+      const currentPost = await BlogPost.findById(id);
       if (!currentPost.isPublished) {
         data.publishedAt = new Date();
       }
     }
     
     const updatedPost = await BlogPost.findByIdAndUpdate(
-      params.id,
+      id,
       { $set: data },
       { new: true, runValidators: true }
-    );
+    ).populate({ path: 'relatedTerms', strictPopulate: false });
     
     if (!updatedPost) {
       return NextResponse.json(

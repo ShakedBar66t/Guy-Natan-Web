@@ -23,9 +23,18 @@ export default function Hero() {
           </button>
         </div>
 
-        <h1 className="text-center text-white text-6xl">
-          [....INSERT GUY NATAN VIDEO HERE]
-        </h1>
+        <div className="w-full max-w-4xl mx-auto overflow-hidden rounded-lg shadow-xl">
+          <div className="relative pt-[56.25%]">
+            <iframe
+              src="https://player.vimeo.com/video/1060951547?h=42a836d1a9&badge=0&autopause=0&player_id=0&app_id=58479"
+              className="absolute top-0 left-0 w-full h-full"
+              frameBorder="0"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowFullScreen
+              title="גיא נתן סרטון"
+            ></iframe>
+          </div>
+        </div>
       </div>
     </section>
   );

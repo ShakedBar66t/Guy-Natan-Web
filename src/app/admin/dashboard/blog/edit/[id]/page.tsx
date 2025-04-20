@@ -13,18 +13,28 @@ interface BlogPost {
   excerpt?: string;
   coverImage?: string;
   isPublished: boolean;
+  category?: string;
+  level?: string;
+  relatedTerms?: string[];
 }
 
 export default function EditBlogPost() {
   const params = useParams();
+  const id = params?.id as string; // Use optional chaining and type assertion
+  
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     async function fetchPost() {
+      if (!id) {
+        setError('Invalid post ID');
+        setLoading(false);
+        return;
+      }
+      
       try {
-        const id = params.id;
         const response = await fetch(`/api/admin/blog/${id}`);
         
         if (!response.ok) {
@@ -42,7 +52,7 @@ export default function EditBlogPost() {
     }
     
     fetchPost();
-  }, [params.id]);
+  }, [id]);
 
   if (loading) {
     return (

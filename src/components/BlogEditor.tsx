@@ -1,9 +1,15 @@
 'use client';
 
-import { useState, useRef, ChangeEvent } from 'react';
+import { useState, useRef, ChangeEvent, useEffect } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { useRouter } from 'next/navigation';
 import Loader from './Loader';
+
+interface FinancialTerm {
+  _id: string;
+  term: string;
+  slug: string;
+}
 
 interface BlogPost {
   _id?: string;
@@ -15,6 +21,7 @@ interface BlogPost {
   isPublished: boolean;
   category?: string;
   level?: string;
+  relatedTerms?: string[];
 }
 
 interface BlogEditorProps {
@@ -42,11 +49,35 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
     isPublished: post?.isPublished || false,
     category: post?.category || '',
     level: post?.level || '',
+    relatedTerms: post?.relatedTerms || [],
   });
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [terms, setTerms] = useState<FinancialTerm[]>([]);
+  const [termsLoading, setTermsLoading] = useState(false);
+
+  // Fetch glossary terms for the selector
+  useEffect(() => {
+    async function fetchTerms() {
+      try {
+        setTermsLoading(true);
+        const response = await fetch('/api/glossary');
+        if (!response.ok) {
+          throw new Error('Failed to fetch glossary terms');
+        }
+        const data = await response.json();
+        setTerms(data);
+      } catch (err) {
+        console.error('Error fetching glossary terms:', err);
+      } finally {
+        setTermsLoading(false);
+      }
+    }
+
+    fetchTerms();
+  }, []);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -56,6 +87,14 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
   const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setFormData((prev) => ({ ...prev, [name]: checked }));
+  };
+
+  const handleTermSelection = (e: ChangeEvent<HTMLSelectElement>) => {
+    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+    setFormData(prev => ({
+      ...prev,
+      relatedTerms: selectedOptions
+    }));
   };
 
   const handleEditorChange = () => {
@@ -241,6 +280,36 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
             </select>
           </div>
         </div>
+
+        <div>
+          <label htmlFor="relatedTerms" className="block text-sm font-medium text-gray-700">
+            מושגים קשורים
+          </label>
+          {termsLoading ? (
+            <div className="mt-1 py-2">
+              <Loader text="טוען מושגים..." size="small" />
+            </div>
+          ) : (
+            <select
+              id="relatedTerms"
+              name="relatedTerms"
+              value={formData.relatedTerms}
+              onChange={handleTermSelection}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              multiple
+              size={5}
+            >
+              {terms.map((term) => (
+                <option key={term._id} value={term._id}>
+                  {term.term}
+                </option>
+              ))}
+            </select>
+          )}
+          <p className="mt-1 text-sm text-gray-500">
+            לחץ על Ctrl/⌘ כדי לבחור מספר מושגים
+          </p>
+        </div>
         
         <div>
           <label htmlFor="excerpt" className="block text-sm font-medium text-gray-700">
@@ -249,16 +318,16 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
           <textarea
             id="excerpt"
             name="excerpt"
+            rows={3}
             value={formData.excerpt}
             onChange={handleChange}
-            rows={3}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           />
         </div>
         
         <div>
           <label htmlFor="coverImage" className="block text-sm font-medium text-gray-700">
-            כתובת URL של תמונת שער
+            תמונת קאבר (URL)
           </label>
           <input
             type="text"
@@ -271,58 +340,56 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
         </div>
         
         <div>
-          <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
             תוכן
           </label>
-          <div className="mt-1">
-            <Editor
-              apiKey={API_KEY}
-              onInit={(evt, editor) => editorRef.current = editor}
-              initialValue={formData.content}
-              onEditorChange={handleEditorChange}
-              init={{
-                height: 500,
-                menubar: true,
-                plugins: [
-                  'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                  'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                  'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount', 'directionality'
-                ],
-                toolbar: 'undo redo | blocks | bold italic forecolor | ' +
-                  'alignleft aligncenter alignright alignjustify | ' +
-                  'bullist numlist outdent indent | removeformat | help | ltr rtl',
-                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-                directionality: 'rtl',
-                readonly: false,
-                promotion: false,
-              }}
-            />
-          </div>
+          <Editor
+            id="content"
+            apiKey={API_KEY}
+            onInit={(evt, editor) => {
+              editorRef.current = editor;
+            }}
+            initialValue={formData.content}
+            init={{
+              height: 500,
+              menubar: true,
+              plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount', 'directionality'
+              ],
+              toolbar: 'undo redo | blocks | ' +
+                'bold italic forecolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | ltr rtl | help',
+              content_style: 'body { font-family:Arial,sans-serif; font-size:16px; direction: rtl; }',
+              directionality: 'rtl',
+              language: 'he',
+            }}
+            onEditorChange={handleEditorChange}
+          />
         </div>
         
-        <div className="flex justify-end space-x-3">
+        <div className="flex justify-end">
           <button
             type="button"
+            className="mr-4 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             onClick={() => router.push('/admin/dashboard/blog')}
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ml-3"
           >
             ביטול
           </button>
           <button
             type="submit"
-            className={`px-6 py-2 rounded-md text-white font-medium ${
-              formData.title && formData.content
-                ? 'bg-blue-600 hover:bg-blue-700'
-                : 'bg-gray-400 cursor-not-allowed'
-            }`}
-            disabled={loading || !formData.title || !formData.content}
+            disabled={loading}
+            className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             {loading ? (
-              <div className="flex justify-center items-center">
-                <Loader text={null} size="small" className="my-0" />
-              </div>
+              <>
+                <Loader size="small" text={null} className="mr-2" type="spinner" />
+                <span>שומר...</span>
+              </>
             ) : (
-              isEditing ? 'עדכן מאמר' : 'צור מאמר'
+              <span>{isEditing ? 'עדכן מאמר' : 'צור מאמר'}</span>
             )}
           </button>
         </div>

@@ -8,6 +8,8 @@ export interface IFinancialTerm extends Document {
   createdAt: Date;
   updatedAt: Date;
   order?: number; // For controlling display order
+  category?: string;
+  difficulty?: string;
 }
 
 const FinancialTermSchema: Schema = new Schema(
@@ -16,6 +18,7 @@ const FinancialTermSchema: Schema = new Schema(
       type: String,
       required: [true, 'Please provide a term name'],
       maxlength: [100, 'Term cannot be more than 100 characters'],
+      trim: true,
     },
     definition: {
       type: String,
@@ -33,6 +36,15 @@ const FinancialTermSchema: Schema = new Schema(
     order: {
       type: Number,
       default: 0,
+    },
+    category: {
+      type: String,
+      trim: true,
+    },
+    difficulty: {
+      type: String,
+      enum: ['מתחילים', 'בינוני', 'מתקדם'],
+      default: 'מתחילים',
     },
   },
   {

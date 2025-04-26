@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Editor } from '@tinymce/tinymce-react';
+import { nanoid } from 'nanoid';
 import { toast } from 'react-hot-toast';
 import Loader from '@/components/Loader';
+import TinyMCEEditor from '@/components/TinyMCEEditor';
+import HebrewEditor from '@/components/HebrewEditor';
 
 interface FinancialTerm {
   _id: string;
@@ -29,10 +31,7 @@ export default function GlossaryManagementPage() {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
-  // Get the API key - fallback to a hardcoded value if env var is not available
-  // This ensures we always have a valid key
-  const API_KEY = process.env.NEXT_PUBLIC_TINYMCE_API_KEY || 'l9jp7dztnnrgwndr7c2jgmuo1qxht4324yt0p53g0qlfby1w';
+  const [useRichEditor, setUseRichEditor] = useState(true);
 
   // Fetch terms on component mount
   useEffect(() => {
@@ -90,32 +89,11 @@ export default function GlossaryManagementPage() {
     }));
   };
 
-  // Handle editor content change
-  const handleEditorChange = (content: string, editor?: any) => {
-    // If content is already a string, use it directly
-    // If it's an object and we have the editor instance, get content from the editor
-    let contentString = '';
-    
-    if (typeof content === 'string') {
-      contentString = content;
-    } else if (editor && typeof editor.getContent === 'function') {
-      contentString = editor.getContent();
-    } else if (content && typeof content === 'object') {
-      // Fallback if editor is not provided but content is an object
-      // Try to access common TinyMCE content properties
-      contentString = 
-        (content as any).content || 
-        (content as any).html || 
-        (content as any).value || 
-        JSON.stringify(content);
-    } else {
-      // Last resort fallback
-      contentString = String(content || '');
-    }
-    
+  // Handle editor content change - simplified for React-Quill
+  const handleEditorChange = (content: string) => {
     setFormData(prev => ({
       ...prev,
-      definition: contentString
+      definition: content
     }));
   };
 
@@ -344,27 +322,30 @@ export default function GlossaryManagementPage() {
                 <label className="block text-gray-700 text-sm font-bold mb-2">
                   הגדרה
                 </label>
-                <Editor
-                  initialValue={formData.definition}
-                  onEditorChange={handleEditorChange}
-                  apiKey={API_KEY}
-                  init={{
-                    height: 300,
-                    menubar: true,
-                    plugins: [
-                      'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                      'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                      'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount', 'directionality'
-                    ],
-                    toolbar: 'undo redo | blocks | ' +
-                      'bold italic forecolor | alignleft aligncenter ' +
-                      'alignright alignjustify | bullist numlist outdent indent | ' +
-                      'removeformat | link | help | ltr rtl',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-                    directionality: 'rtl', // Default to RTL for Hebrew content
-                    promotion: false, // Disable TinyMCE promotions
-                  }}
-                />
+                <div className="mb-2">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={useRichEditor}
+                      onChange={(e) => setUseRichEditor(e.target.checked)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <span className="mr-2 text-gray-700">עורך עשיר</span>
+                  </label>
+                </div>
+                {useRichEditor ? (
+                  <TinyMCEEditor
+                    initialContent={formData.definition}
+                    onChange={(html) => setFormData(prev => ({ ...prev, definition: html }))}
+                    height="200px"
+                  />
+                ) : (
+                  <HebrewEditor
+                    initialValue={formData.definition}
+                    onChange={(content) => setFormData(prev => ({ ...prev, definition: content }))}
+                    height="200px"
+                  />
+                )}
               </div>
               
               <div className="mb-4">

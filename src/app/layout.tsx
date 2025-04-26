@@ -2,6 +2,7 @@
 import "@/app/globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ContactFormSection from "@/components/ContactFormSection";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import TradingViewTicker from "@/components/TradingViewTicker";
 import { Providers } from "./providers";
@@ -25,13 +26,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="he" dir="rtl" className={assistant.className}>
       <body className={assistant.className}>
         <Providers>
-          {/* We wrap TradingViewTicker in a client component boundary via Providers */}
+          {/* TradingViewTicker now shown on all devices */}
           <TradingViewTicker />
-          <div className="pt-0 md:pt-12"> {/* Only add padding on desktop for ticker */}
+          <div className="pt-12"> {/* Add padding on all devices for ticker */}
             <Header />
             <main>
               {children}
             </main>
+            <ContactFormSection />
             <Footer />
           </div>
         </Providers>

@@ -1,132 +1,112 @@
 // TradingViewTicker.tsx
 'use client'; // This directive must be the first line
 
-import Script from "next/script";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function TradingViewTicker() {
-  // Use state to track if we should render on client
-  const [shouldRender, setShouldRender] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    try {
-      // Safety check - don't continue if window is not defined (SSR)
-      if (typeof window === 'undefined') return;
-      
-      // Check if we're on a mobile device
-      const isMobile = window.innerWidth < 768;
-      
-      // Only set to render if we're on a desktop
-      setShouldRender(!isMobile);
-      
-      // Don't continue with setup if on mobile
-      if (isMobile) return;
+    // Skip in SSR
+    if (typeof window === 'undefined') return;
 
-      // Ensure the widget is positioned at the top after it loads
-      const adjustWidget = () => {
-        try {
-          const widgetIframe = document.getElementById("tradingview-widget-ticker-tape");
-          if (widgetIframe) {
-            const parentElement = widgetIframe.parentElement;
-            if (parentElement) {
-              parentElement.style.position = "fixed";
-              parentElement.style.top = "0";
-              parentElement.style.left = "0";
-              parentElement.style.width = "100%";
-              parentElement.style.zIndex = "50"; // Lower z-index so it doesn't block the header
-              
-              // IMPORTANT: Modify these lines to force body scrolling
-              document.documentElement.style.overflow = "auto";
-              document.body.style.overflow = "auto";
-              document.body.style.height = "auto";
-              document.body.style.position = "static";
+    // Create script element
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';
+    script.async = true;
+    script.type = 'text/javascript';
+    
+    // Configure widget settings
+    script.innerHTML = JSON.stringify({
+      symbols: [
+        { description: "USD/ILS", proName: "FOREXCOM:USDILS" },
+        { description: "Tel Aviv 125", proName: "TASE:TA125" },
+        { description: "Tel Aviv 35", proName: "TASE:TA35" },
+        { description: "EUR/ILS", proName: "SAXO:EURILS" },
+        { description: "NASDAQ 100", proName: "NASDAQ:NDX" },
+        { description: "NIKKEI", proName: "OSE:NK2251!" },
+        { description: "Bitcoin", proName: "BITSTAMP:BTCUSD" },
+        { description: "Ethereum", proName: "COINBASE:ETHUSD" },
+        { description: "S&P 500 Index", proName: "FOREXCOM:SPX500" }
+      ],
+      showSymbolLogo: true,
+      isTransparent: false,
+      displayMode: "adaptive",
+      colorTheme: "dark",
+      locale: "en"
+    });
+
+    // Append to container
+    if (containerRef.current) {
+      // Clear any previous widgets
+      containerRef.current.innerHTML = '';
+      
+      // Create widget container
+      const widgetContainer = document.createElement('div');
+      widgetContainer.className = 'tradingview-widget-container';
+      
+      // Create widget div
+      const widgetDiv = document.createElement('div');
+      widgetDiv.className = 'tradingview-widget-container__widget';
+      widgetContainer.appendChild(widgetDiv);
+      
+      // Create copyright div
+      const copyrightDiv = document.createElement('div');
+      copyrightDiv.className = 'tradingview-widget-copyright';
+      widgetContainer.appendChild(copyrightDiv);
+      
+      // Append widget container to our component container
+      containerRef.current.appendChild(widgetContainer);
+      
+      // Add script to widget container
+      widgetContainer.appendChild(script);
+      
+      // Force 100% width on mobile and desktop
+      const fixStyle = () => {
+        const tickerTape = document.querySelector('.tradingview-widget-container');
+        if (tickerTape) {
+          const iframe = tickerTape.querySelector('iframe');
+          if (iframe) {
+            iframe.style.width = '100%';
+            if (window.innerWidth < 768) {
+              iframe.style.height = '38px';
             }
           }
-        } catch (error) {
-          console.error("Error adjusting TradingView widget:", error);
         }
       };
-
-      // Run once on component mount
-      adjustWidget();
       
-      // Also run after a delay to ensure the widget has loaded
-      const timeoutId = setTimeout(adjustWidget, 1000);
+      // Apply style changes after delays
+      setTimeout(fixStyle, 1000);
+      setTimeout(fixStyle, 2000);
+      setTimeout(fixStyle, 3000);
       
-      // Handle resize events
+      // Handle resize
       const handleResize = () => {
-        try {
-          if (window.innerWidth < 768) {
-            setShouldRender(false);
-          } else {
-            setShouldRender(true);
-            // Re-adjust the widget when going from mobile to desktop
-            setTimeout(adjustWidget, 100);
-          }
-        } catch (error) {
-          console.error("Error in TradingView resize handler:", error);
-        }
+        fixStyle();
       };
       
-      // Safely add event listener
-      try {
-        window.addEventListener('resize', handleResize);
-      } catch (error) {
-        console.error("Error adding resize listener:", error);
-      }
+      window.addEventListener('resize', handleResize);
       
       return () => {
-        // Clean up
-        clearTimeout(timeoutId);
-        try {
-          window.removeEventListener('resize', handleResize);
-        } catch (error) {
-          console.error("Error removing resize listener:", error);
-        }
+        window.removeEventListener('resize', handleResize);
       };
-    } catch (error) {
-      console.error("Error in TradingViewTicker useEffect:", error);
-      return () => {}; // Empty cleanup function
     }
   }, []);
 
-  // Safety check - if there's any error or we shouldn't render, return null
-  if (!shouldRender) {
-    return null;
-  }
-
-  // Only render the component if shouldRender is true
   return (
-    <div className="hidden md:block"> {/* Additional CSS hiding for safety */}
-      <div className="tradingview-widget-container__widget"></div>
-      <div className="tradingview-widget-copyright"></div>
-      <Script
-        id="tradingview-widget-ticker-tape"
-        strategy="afterInteractive"
-        src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js"
-        dangerouslySetInnerHTML={{
-          __html: `
-          {
-            "symbols": [
-              { "description": "USD/ILS", "proName": "FOREXCOM:USDILS" },
-              { "description": "Tel Aviv 125", "proName": "TASE:TA125" },
-              { "description": "Tel Aviv 35", "proName": "TASE:TA35" },
-              { "description": "EUR/ILS", "proName": "SAXO:EURILS" },
-              { "description": "NASDAQ 100", "proName": "NASDAQ:NDX" },
-              { "description": "NIKKEI", "proName": "OSE:NK2251!" },
-              { "description": "Bitcoin", "proName": "BITSTAMP:BTCUSD" },
-              { "description": "Ethereum", "proName": "COINBASE:ETHUSD" },
-              { "description": "S&P 500 Index", "proName": "FOREXCOM:SPX500" }
-            ],
-            "showSymbolLogo": true,
-            "isTransparent": false,
-            "displayMode": "adaptive",
-            "colorTheme": "dark",
-            "locale": "en"
-          }
-          `,
-        }}
-      />
-    </div>
+    <div 
+      ref={containerRef} 
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '42px',
+        zIndex: 9999,
+        background: '#151515',
+        overflow: 'hidden',
+        minHeight: '38px'
+      }}
+    />
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import MaxWidthWrapper from '@/components/MaxWidthWrapper';
+import ContactForm from "@/components/ContactForm";
 
 export default function PortfolioPage() {
   // State for form inputs
@@ -353,44 +354,23 @@ export default function PortfolioPage() {
         )}
         
         {/* Newsletter Section */}
-        <div className="bg-[#32a191] text-white rounded-lg p-8 mb-16" dir="rtl">
-          <div className="text-center mb-6">
-            <h3 className="text-2xl font-bold mb-2">
-              לקבלת ייעוץ אישי והצעת תיק השקעות מותאם
-            </h3>
-            <p className="text-lg">
-              השאירו פרטים ונחזור אליכם עם מידע נוסף
+        <div className="bg-[#32a191] text-white py-16 px-4 text-center">
+          <div className="container mx-auto max-w-2xl">
+            <h2 className="text-3xl font-bold mb-8">
+              מעוניינים ליצור פרויקט משלכם?
+            </h2>
+            <p className="text-xl mb-8">
+              השאירו פרטים ואחזור אליכם בהקדם לשיחת ייעוץ.
             </p>
+            <div className="max-w-md mx-auto">
+              <ContactForm 
+                source="portfolio_page"
+                className="bg-transparent shadow-none"
+                title=""
+                showMessageField={false}
+              />
+            </div>
           </div>
-          <form className="max-w-md mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="שם מלא"
-              required
-              dir="rtl"
-              className="md:col-span-2 p-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-white"
-            />
-            <input
-              type="email"
-              placeholder="כתובת דוא״ל"
-              required
-              dir="rtl"
-              className="p-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-white"
-            />
-            <input
-              type="tel"
-              placeholder="טלפון"
-              required
-              dir="rtl"
-              className="p-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-white"
-            />
-            <button
-              type="submit"
-              className="md:col-span-2 bg-white text-[#32a191] font-medium py-3 px-6 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              שליחה
-            </button>
-          </form>
         </div>
         
         {/* Info Sections */}

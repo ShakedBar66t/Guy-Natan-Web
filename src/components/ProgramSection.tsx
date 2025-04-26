@@ -13,6 +13,8 @@ import {
   FaRegChartBar, 
   FaCrown 
 } from "react-icons/fa";
+import ContactForm from "@/components/ContactForm";
+import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 
 const programs = [
   {
@@ -84,18 +86,22 @@ export default function ProgramsSection() {
         </h2>
       </div>
 
-      <div className="w-full bg-[#50D3C5] py-10 sm:py-16 mb-12">
-        <div className="container mx-auto max-w-5xl px-4 sm:px-8">
+      <MaxWidthWrapper className="mb-12">
+        <div className="w-full bg-[#50D3C5] py-10 sm:py-16 rounded-xl">
           <h1 className='text-center text-3xl sm:text-4xl md:text-5xl mb-6 sm:mb-10'>
-              לקבלת פרטים נוספים עבור תוכנית ההכשרה
+            לקבלת פרטים נוספים עבור תוכנית ההכשרה
           </h1>
-          <div className='flex flex-col sm:flex-row gap-4 max-w-4xl mx-auto'>
-              <input type="text" className='rounded-lg p-3 font-[300] w-full' placeholder='שם מלא' />
-              <input type="text" className='rounded-lg p-3 font-[300] w-full' placeholder='מספר טלפון' />
-              <button className='text-white bg-[#002F42] p-3 rounded-lg font-500 w-full sm:w-auto sm:px-8'>שליחה</button>
+          <div className='max-w-4xl mx-auto px-4'>
+            <ContactForm 
+              source="program_section"
+              className="bg-transparent shadow-none"
+              showMessageField={false}
+              title=""
+              tealBackground={true}
+            />
           </div>
         </div>
-      </div>
+      </MaxWidthWrapper>
 
       <div className="container mx-auto max-w-5xl px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">

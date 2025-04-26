@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import ContactForm from "@/components/ContactForm";
+import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 
 // FAQ data with questions and answers
 const faqItems = [
@@ -45,7 +47,7 @@ export default function FinancialUpdatesSection() {
     };
 
     return (
-        <section className="py-16">
+        <section className="py-12 md:py-24">
             <div className="container mx-auto max-w-5xl px-4">
                 <h2 className="text-5xl text-center mb-12 text-[#012E3E]">
                     רגע לפני שתשאלו, <span className="font-bold">הקדמנו אתכם עם תשובות</span>
@@ -87,18 +89,6 @@ export default function FinancialUpdatesSection() {
                                 </div>
                             ))}
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div className="w-full bg-[#50D3C5] py-10 mt-12 sm:py-16 mb-12">
-                <div className="container mx-auto max-w-5xl px-4 sm:px-8">
-                    <h1 className='text-center text-3xl sm:text-4xl md:text-5xl mb-6 sm:mb-10'>
-                        לקבלת פרטים נוספים עבור תוכנית ההכשרה
-                    </h1>
-                    <div className='flex flex-col sm:flex-row gap-4 max-w-4xl mx-auto'>
-                        <input type="text" className='rounded-lg p-3 font-[300] w-full' placeholder='שם מלא' />
-                        <input type="text" className='rounded-lg p-3 font-[300] w-full' placeholder='מספר טלפון' />
-                        <button className='text-white bg-[#002F42] p-3 rounded-lg font-500 w-full sm:w-auto sm:px-8'>שליחה</button>
                     </div>
                 </div>
             </div>

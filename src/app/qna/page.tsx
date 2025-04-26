@@ -1,8 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import MaxWidthWrapper from '@/components/MaxWidthWrapper';
+import Loader from '@/components/Loader';
+
+interface FAQ {
+  _id: string;
+  question: string;
+  answer: string;
+  isPublished: boolean;
+  order: number;
+}
 
 // FAQ Item component with accordion functionality
 const FAQItem = ({ question, answer }: { question: string; answer: string }) => {
@@ -25,34 +34,75 @@ const FAQItem = ({ question, answer }: { question: string; answer: string }) => 
       </div>
       
       {isOpen && (
-        <div className="mt-4 text-gray-600 text-right leading-relaxed pr-4">
-          <p>{answer}</p>
-        </div>
+        <div className="mt-4 text-gray-600 text-right leading-relaxed pr-4"
+             dangerouslySetInnerHTML={{ __html: answer }}
+        />
       )}
     </div>
   );
 };
 
 export default function QnAPage() {
-  // FAQ data
-  const faqs = [
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch FAQs from API
+  useEffect(() => {
+    async function fetchFaqs() {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/qna');
+        if (!response.ok) {
+          throw new Error('Failed to fetch FAQs');
+        }
+        const data = await response.json();
+        setFaqs(data);
+      } catch (err) {
+        console.error('Error fetching FAQs:', err);
+        setError('אירעה שגיאה בטעינת השאלות. נסה שוב מאוחר יותר.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchFaqs();
+  }, []);
+
+  // Fallback FAQs in case API fails or for development
+  const fallbackFaqs = [
     {
+      _id: '1',
       question: "איך יודעים מה המסלול שהכי מתאים לי?",
-      answer: "עבדנו כבר עם מאות לקוחות ולמדנו שצריך לעשות איפון מלא כדי לייצר תכנית מותאמת אישית לכל אדם."
+      answer: "עבדנו כבר עם מאות לקוחות ולמדנו שצריך לעשות איפון מלא כדי לייצר תכנית מותאמת אישית לכל אדם.",
+      isPublished: true,
+      order: 1
     },
     {
+      _id: '2',
       question: "אני לא במצב פיננסי הכי טוב, התכנית רלוונטית לי?",
-      answer: "הייחוד של התכניות שלנו הוא ההתאמה המוחלטת אליכם, כך שהתכנית והמטרות שלה הן נגזרות של המצב והמטרות האישיות שלכם."
+      answer: "הייחוד של התכניות שלנו הוא ההתאמה המוחלטת אליכם, כך שהתכנית והמטרות שלה הן נגזרות של המצב והמטרות האישיות שלכם.",
+      isPublished: true,
+      order: 2
     },
     {
+      _id: '3',
       question: "אני משקיע/ה כבר תקופה, מרגיש/ה שאני מוכן לNext-step, איזו תכנית מתאימה לי?",
-      answer: "אם אתם מגיעים עם ידע בסיסי בפיננסים, נמליץ לרוב על תכנית \"המשקיע האקטיבי\" בה הופכים ממשקיעים פסיביים למשקיעים אקטיביים שיודעים לנתח מגמות בשוק ההון. בכל מקרה אפשר להתחיל מפגישה חד פעמית להתאמת תוכנית מושלמת עבורך."
+      answer: "אם אתם מגיעים עם ידע בסיסי בפיננסים, נמליץ לרוב על תכנית \"המשקיע האקטיבי\" בה הופכים ממשקיעים פסיביים למשקיעים אקטיביים שיודעים לנתח מגמות בשוק ההון. בכל מקרה אפשר להתחיל מפגישה חד פעמית להתאמת תוכנית מושלמת עבורך.",
+      isPublished: true,
+      order: 3
     },
     {
+      _id: '4',
       question: "כסף תמיד מלחיץ אותי ואני חושש/ת שזה קצת גדול עליי.",
-      answer: "השינוי במצב הפיננסי הוא לא קסם וסיימנו, אלא תהליך שקורה בצעדים קטנים, בקצב שמתאים לך ולא בקצב שלנו. אחרת זה לא יעבוד. בכל מקרה הצעד הראשון הוא להבין מה המצב המצוי ומה הרצוי ורק משם ממשיכים."
+      answer: "השינוי במצב הפיננסי הוא לא קסם וסיימנו, אלא תהליך שקורה בצעדים קטנים, בקצב שמתאים לך ולא בקצב שלנו. אחרת זה לא יעבוד. בכל מקרה הצעד הראשון הוא להבין מה המצב המצוי ומה הרצוי ורק משם ממשיכים.",
+      isPublished: true,
+      order: 4
     }
   ];
+
+  // Use fallback FAQs if API fails or in development
+  const displayFaqs = faqs.length > 0 ? faqs : fallbackFaqs;
 
   const [newsletterData, setNewsletterData] = useState({
     name: '',
@@ -109,9 +159,17 @@ export default function QnAPage() {
 
         {/* FAQ Section */}
         <div className="max-w-3xl mx-auto mb-16 bg-white rounded-lg shadow-lg p-8">
-          {faqs.map((faq, index) => (
-            <FAQItem key={index} question={faq.question} answer={faq.answer} />
-          ))}
+          {loading ? (
+            <Loader size="medium" text="טוען שאלות ותשובות..." />
+          ) : error ? (
+            <div className="text-center text-red-500 py-4">
+              <p>{error}</p>
+            </div>
+          ) : (
+            displayFaqs.map((faq) => (
+              <FAQItem key={faq._id} question={faq.question} answer={faq.answer} />
+            ))
+          )}
         </div>
 
         {/* CTA Section */}

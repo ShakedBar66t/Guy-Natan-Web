@@ -26,8 +26,12 @@ export async function POST(request: NextRequest) {
       );
     }
     
+    console.log('User found, checking password');
+    
     // Check if password is correct
     const isPasswordValid = await bcrypt.compare(password, user.password);
+    console.log('Password validation result:', isPasswordValid);
+    
     if (!isPasswordValid) {
       console.log('Invalid password for user:', email);
       return NextResponse.json(

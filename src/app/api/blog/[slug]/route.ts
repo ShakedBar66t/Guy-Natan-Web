@@ -3,17 +3,16 @@ import dbConnect from '@/lib/db';
 import BlogPost from '@/models/BlogPost';
 import '@/models/FinancialTerm'; // Import to ensure model is registered
 
-interface Params {
-  params: {
-    slug: string;
-  };
-}
-
-export async function GET(request: NextRequest, context: Params) {
+// Fix the params issue using the proper Next.js App Router syntax
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { slug: string } }
+) {
   try {
     await dbConnect();
     
-    const { slug } = context.params;
+    // Get the slug from params - this should work with App Router
+    const slug = params.slug;
     
     // Special case for 'new' slug which shouldn't be handled here
     if (slug === 'new') {
@@ -24,7 +23,6 @@ export async function GET(request: NextRequest, context: Params) {
     }
     
     // Find the blog post by slug and ensure it's published
-    // Use populate to include related terms data
     const blogPost = await BlogPost.findOne({ 
       slug,
       isPublished: true

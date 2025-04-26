@@ -63,7 +63,7 @@ const TinyMCEEditor = ({ initialContent, onChange, height = '300px' }: TinyMCEEd
         </div>
       )}
       <Editor
-        apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+        apiKey="l9jp7dztnnrgwndr7c2jgmuo1qxht4324yt0p53g0qlfby1w"
         onInit={handleInit}
         value={initialContent}
         init={{

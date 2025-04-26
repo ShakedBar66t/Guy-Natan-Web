@@ -3,8 +3,8 @@
 import Script from 'next/script';
 
 export default function TinyMCEScript() {
-  // Use your free API key from TinyMCE Cloud
-  const apiKey = process.env.NEXT_PUBLIC_TINYMCE_API_KEY;
+  // For client-side, use a direct value since env vars might not be loading correctly
+  const apiKey = 'l9jp7dztnnrgwndr7c2jgmuo1qxht4324yt0p53g0qlfby1w';
   
   return (
     <Script

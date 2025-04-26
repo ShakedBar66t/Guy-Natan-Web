@@ -38,8 +38,8 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
   const router = useRouter();
   const editorRef = useRef<any>(null);
   
-  // Get the API key - fallback to a hardcoded value if env var is not available
-  const API_KEY = process.env.NEXT_PUBLIC_TINYMCE_API_KEY;
+  // Using a hardcoded API key for consistency
+  const API_KEY = 'l9jp7dztnnrgwndr7c2jgmuo1qxht4324yt0p53g0qlfby1w';
   
   const [formData, setFormData] = useState<BlogPost>({
     title: post?.title || '',

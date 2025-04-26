@@ -20,9 +20,8 @@ export default function Editor({ initialValue = '', onChange, height = 500 }: Ed
   const editorRef = useRef<any>(null);
   const [terms, setTerms] = useState<FinancialTerm[]>([]);
 
-  // Get the API key - fallback to a hardcoded value if env var is not available
-  // This ensures we always have a valid key
-  const API_KEY = process.env.NEXT_PUBLIC_TINYMCE_API_KEY;
+  // Using a hardcoded API key for consistency across client components
+  const API_KEY = 'l9jp7dztnnrgwndr7c2jgmuo1qxht4324yt0p53g0qlfby1w';
 
   // Fetch financial terms when the component mounts
   useEffect(() => {

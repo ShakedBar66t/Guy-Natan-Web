@@ -9,6 +9,7 @@ import Glossary from '@/components/Glossary';
 import Loader from '@/components/Loader';
 import { useSearchParams, useRouter } from 'next/navigation';
 import logger from '@/utils/logger';
+import ContactForm from "@/components/ContactForm";
 
 interface BlogPost {
   _id: string;
@@ -300,30 +301,6 @@ export default function BlogPage() {
         <Suspense fallback={<Loader />}>
           <BlogContent />
         </Suspense>
-
-        {/* Newsletter Section */}
-        <div className="bg-[#32a191] text-white rounded-lg p-8 mb-16" dir="rtl">
-          <div className="text-center mb-6">
-            <h3 className="text-2xl font-bold mb-2">
-              הירשמו לניוזלטר שלנו לקבלת עדכונים על מאמרים חדשים
-            </h3>
-          </div>
-          <form className="max-w-md mx-auto flex flex-col md:flex-row gap-4">
-            <input
-              type="email"
-              placeholder="כתובת דוא״ל"
-              required
-              dir="rtl"
-              className="flex-1 p-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-white"
-            />
-            <button
-              type="submit"
-              className="bg-white text-[#32a191] font-medium py-3 px-6 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              הרשם
-            </button>
-          </form>
-        </div>
       </MaxWidthWrapper>
     </>
   );

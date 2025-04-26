@@ -22,7 +22,7 @@ export default function Editor({ initialValue = '', onChange, height = 500 }: Ed
 
   // Get the API key - fallback to a hardcoded value if env var is not available
   // This ensures we always have a valid key
-  const API_KEY = process.env.NEXT_PUBLIC_TINYMCE_API_KEY || 'l9jp7dztnnrgwndr7c2jgmuo1qxht4324yt0p53g0qlfby1w';
+  const API_KEY = process.env.NEXT_PUBLIC_TINYMCE_API_KEY;
 
   // Fetch financial terms when the component mounts
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function Editor({ initialValue = '', onChange, height = 500 }: Ed
             text: 'מונחים פיננסיים',
             tooltip: 'הוסף קישור למונח פיננסי',
             icon: 'link',
-            fetch: (callback) => {
+            fetch: (callback: any) => {
               const items = terms.map(term => ({
                 type: 'menuitem' as const,
                 text: term.term,
@@ -76,6 +76,19 @@ export default function Editor({ initialValue = '', onChange, height = 500 }: Ed
             }
           });
         }
+        
+        // Fix for RTL cursor jumping issue using TinyMCE's built-in commands
+        editor.on('keydown', function(e: KeyboardEvent) {
+          // Use the directionality commands from TinyMCE for better RTL handling
+          if ((e.keyCode === 37 || e.keyCode === 39) && e.ctrlKey && e.altKey) {
+            e.preventDefault();
+            if (e.keyCode === 37) { // Left arrow with Ctrl+Alt
+              editor.execCommand('mceDirectionRTL');
+            } else if (e.keyCode === 39) { // Right arrow with Ctrl+Alt
+              editor.execCommand('mceDirectionLTR');
+            }
+          }
+        });
       }}
       initialValue={initialValue}
       init={{
@@ -91,13 +104,31 @@ export default function Editor({ initialValue = '', onChange, height = 500 }: Ed
           'alignright alignjustify | bullist numlist outdent indent | ' +
           'removeformat | financialterms | link | help | ltr rtl',
         content_style: `
-          body { font-family:Helvetica,Arial,sans-serif; font-size:14px }
+          body { font-family:Helvetica,Arial,sans-serif; font-size:14px; direction: rtl; text-align: right; }
           .glossary-term { color: #32a191; text-decoration: underline; }
         `,
         directionality: 'rtl', // Default to RTL for Hebrew content
         language: 'he', // Set language to Hebrew
-        readonly: false, // Ensure editor is not read-only
-        promotion: false, // Disable TinyMCE promotions
+        browser_spellcheck: true, // Enable browser's spellchecker
+        contextmenu: false, // Disable context menu to avoid RTL issues
+        entity_encoding: 'raw', // Prevent entity encoding issues with Hebrew
+        forced_root_block: 'p', // Force paragraph as root block
+        element_format: 'html', // Use HTML format
+        fix_list_elements: true, // Fix list elements
+        keep_styles: false, // Don't keep styles on delete/backspace
+        text_patterns: [], // Disable text patterns which can cause RTL issues
+        paste_data_images: true, // Allow pasting images
+        setup: function(editor: any) {
+          // Configure directionality settings
+          editor.on('NodeChange', function(e: any) {
+            const node = editor.selection.getNode();
+            const dir = node.dir || editor.getBody().dir;
+            
+            // Ensure the proper directionality button is active
+            editor.formatter.apply('ltr', { dir: 'ltr' });
+            editor.formatter.apply('rtl', { dir: 'rtl' });
+          });
+        }
       }}
       onEditorChange={onChange}
     />

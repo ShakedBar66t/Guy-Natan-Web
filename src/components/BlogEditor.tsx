@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useRef, ChangeEvent, useEffect } from 'react';
-import { Editor } from '@tinymce/tinymce-react';
 import { useRouter } from 'next/navigation';
 import Loader from './Loader';
+import HebrewEditor from './HebrewEditor';
+import TinyMCEEditor from './TinyMCEEditor';
 
 interface FinancialTerm {
   _id: string;
@@ -38,7 +39,7 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
   const editorRef = useRef<any>(null);
   
   // Get the API key - fallback to a hardcoded value if env var is not available
-  const API_KEY = process.env.NEXT_PUBLIC_TINYMCE_API_KEY || 'l9jp7dztnnrgwndr7c2jgmuo1qxht4324yt0p53g0qlfby1w';
+  const API_KEY = process.env.NEXT_PUBLIC_TINYMCE_API_KEY;
   
   const [formData, setFormData] = useState<BlogPost>({
     title: post?.title || '',
@@ -57,6 +58,7 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
   const [success, setSuccess] = useState('');
   const [terms, setTerms] = useState<FinancialTerm[]>([]);
   const [termsLoading, setTermsLoading] = useState(false);
+  const [useRichEditor, setUseRichEditor] = useState(true);
 
   // Fetch glossary terms for the selector
   useEffect(() => {
@@ -343,31 +345,30 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
           <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
             תוכן
           </label>
-          <Editor
-            id="content"
-            apiKey={API_KEY}
-            onInit={(evt, editor) => {
-              editorRef.current = editor;
-            }}
-            initialValue={formData.content}
-            init={{
-              height: 500,
-              menubar: true,
-              plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount', 'directionality'
-              ],
-              toolbar: 'undo redo | blocks | ' +
-                'bold italic forecolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | ltr rtl | help',
-              content_style: 'body { font-family:Arial,sans-serif; font-size:16px; direction: rtl; }',
-              directionality: 'rtl',
-              language: 'he',
-            }}
-            onEditorChange={handleEditorChange}
-          />
+          <div className="mb-4">
+            <label className="inline-flex items-center">
+              <input
+                type="checkbox"
+                checked={useRichEditor}
+                onChange={(e) => setUseRichEditor(e.target.checked)}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <span className="mr-2 text-gray-700">עורך עשיר</span>
+            </label>
+          </div>
+          {useRichEditor ? (
+            <TinyMCEEditor
+              initialContent={formData.content}
+              onChange={(content) => setFormData(prev => ({ ...prev, content }))}
+              height="500px"
+            />
+          ) : (
+            <HebrewEditor
+              initialValue={formData.content}
+              onChange={(content) => setFormData(prev => ({ ...prev, content }))}
+              height="500px"
+            />
+          )}
         </div>
         
         <div className="flex justify-end">

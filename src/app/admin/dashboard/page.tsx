@@ -71,43 +71,43 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <div className="rounded-lg bg-white p-6 shadow-sm">
-          <h3 className="text-lg font-medium text-gray-700">סך הכל מאמרים</h3>
-          <p className="mt-2 text-3xl font-bold">{stats.blogPosts}</p>
+    <div className="space-y-4 p-2 md:space-y-6 md:p-0">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
+        <div className="rounded-lg bg-white p-4 shadow-sm md:p-6">
+          <h3 className="text-base font-medium text-gray-700 md:text-lg">סך הכל מאמרים</h3>
+          <p className="mt-2 text-2xl font-bold md:text-3xl">{stats.blogPosts}</p>
         </div>
         
-        <div className="rounded-lg bg-white p-6 shadow-sm">
-          <h3 className="text-lg font-medium text-gray-700">מאמרים שפורסמו</h3>
-          <p className="mt-2 text-3xl font-bold">{stats.publishedPosts}</p>
+        <div className="rounded-lg bg-white p-4 shadow-sm md:p-6">
+          <h3 className="text-base font-medium text-gray-700 md:text-lg">מאמרים שפורסמו</h3>
+          <p className="mt-2 text-2xl font-bold md:text-3xl">{stats.publishedPosts}</p>
         </div>
         
-        <div className="rounded-lg bg-white p-6 shadow-sm">
-          <h3 className="text-lg font-medium text-gray-700">טיוטות</h3>
-          <p className="mt-2 text-3xl font-bold">{stats.draftPosts}</p>
+        <div className="rounded-lg bg-white p-4 shadow-sm md:p-6">
+          <h3 className="text-base font-medium text-gray-700 md:text-lg">טיוטות</h3>
+          <p className="mt-2 text-2xl font-bold md:text-3xl">{stats.draftPosts}</p>
         </div>
       </div>
       
       {/* Ynet Statistics */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="rounded-lg bg-white p-6 shadow-sm">
-          <h3 className="text-lg font-medium text-gray-700">סך הכל כתבות Ynet</h3>
-          <p className="mt-2 text-3xl font-bold">{ynetStats.ynetArticles}</p>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+        <div className="rounded-lg bg-white p-4 shadow-sm md:p-6">
+          <h3 className="text-base font-medium text-gray-700 md:text-lg">סך הכל כתבות Ynet</h3>
+          <p className="mt-2 text-2xl font-bold md:text-3xl">{ynetStats.ynetArticles}</p>
         </div>
         
-        <div className="rounded-lg bg-white p-6 shadow-sm">
-          <h3 className="text-lg font-medium text-gray-700">כתבות Ynet מהחודש האחרון</h3>
-          <p className="mt-2 text-3xl font-bold">{ynetStats.recentArticles}</p>
+        <div className="rounded-lg bg-white p-4 shadow-sm md:p-6">
+          <h3 className="text-base font-medium text-gray-700 md:text-lg">כתבות Ynet מהחודש האחרון</h3>
+          <p className="mt-2 text-2xl font-bold md:text-3xl">{ynetStats.recentArticles}</p>
         </div>
       </div>
       
-      <div className="rounded-lg bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-lg font-medium text-gray-700">פעולות מהירות</h3>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="rounded-lg bg-white p-4 shadow-sm md:p-6">
+        <h3 className="mb-3 text-base font-medium text-gray-700 md:mb-4 md:text-lg">פעולות מהירות</h3>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-3">
           <Link
             href="/admin/dashboard/blog/new"
-            className="flex items-center rounded-md bg-blue-100 p-4 text-blue-700 hover:bg-blue-200"
+            className="flex items-center rounded-md bg-blue-100 p-3 text-sm text-blue-700 hover:bg-blue-200 md:p-4 md:text-base"
           >
             <span className="text-lg">✏️</span>
             <span className="mr-2">צור מאמר חדש</span>
@@ -115,7 +115,7 @@ export default function Dashboard() {
           
           <Link
             href="/admin/dashboard/blog"
-            className="flex items-center rounded-md bg-purple-100 p-4 text-purple-700 hover:bg-purple-200"
+            className="flex items-center rounded-md bg-purple-100 p-3 text-sm text-purple-700 hover:bg-purple-200 md:p-4 md:text-base"
           >
             <span className="text-lg">📋</span>
             <span className="mr-2">נהל מאמרים</span>
@@ -123,10 +123,19 @@ export default function Dashboard() {
           
           <Link
             href="/admin/dashboard/ynet/new"
-            className="flex items-center rounded-md bg-red-100 p-4 text-red-700 hover:bg-red-200"
+            className="flex items-center rounded-md bg-red-100 p-3 text-sm text-red-700 hover:bg-red-200 md:p-4 md:text-base"
           >
             <span className="text-lg">📰</span>
             <span className="mr-2">הוסף כתבת Ynet חדשה</span>
+          </Link>
+
+          <Link
+            href="/admin/dashboard/glossary"
+            className="flex items-center rounded-md bg-green-100 p-3 text-sm text-green-700 hover:bg-green-200 md:p-4 md:text-base"
+            dir="rtl"
+          >
+            <span className="text-lg">📚</span>
+            <span className="mr-2">נהל מילון מונחים</span>
           </Link>
         </div>
       </div>

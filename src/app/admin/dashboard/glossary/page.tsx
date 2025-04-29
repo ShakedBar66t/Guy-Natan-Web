@@ -31,7 +31,7 @@ export default function GlossaryManagementPage() {
     isPublished: true,
     order: 0,
     category: '',
-    difficulty: 'מתחילים',
+    difficulty: 'מתחילים' as 'מתחילים' | 'בינוני' | 'מתקדם',
   });
   const [isSaving, setIsSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -119,8 +119,8 @@ export default function GlossaryManagementPage() {
       definition: term.definition,
       isPublished: term.isPublished,
       order: term.order || 0,
-      category: term.category,
-      difficulty: term.difficulty,
+      category: term.category || '',
+      difficulty: term.difficulty || 'מתחילים',
     });
     setIsEditing(true);
   };
@@ -271,451 +271,300 @@ export default function GlossaryManagementPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-        {/* Terms List - Left Side */}
-        <div className="md:col-span-4 lg:col-span-3">
-          <div className="mb-6">
-            <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-              <button
-                onClick={handleCreateNew}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition w-full md:w-auto"
-              >
-                הוסף מונח חדש
-              </button>
-              
-              <div className="flex flex-1 max-w-2xl gap-2">
-                {/* Search input */}
-                <div className="relative flex-1">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    placeholder="חיפוש מונחים..."
-                    className="w-full p-2 pl-8 border border-gray-300 rounded-md"
-                  />
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 absolute right-2 top-2.5 text-gray-400" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                
-                {/* Status filter */}
+      {isEditing ? (
+        // Editor form
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-bold mb-6">
+            {selectedTerm ? `עריכת המונח: ${selectedTerm.term}` : 'הוספת מונח חדש'}
+          </h2>
+          
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label htmlFor="term" className="block text-gray-700 font-medium mb-2">שם המונח</label>
+              <input
+                type="text"
+                id="term"
+                name="term"
+                value={formData.term}
+                onChange={handleChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                dir="rtl"
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div>
+                <label htmlFor="isPublished" className="block text-gray-700 font-medium mb-2">סטטוס</label>
                 <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value as 'all' | 'published' | 'draft')}
-                  className="p-2 border border-gray-300 rounded-md"
+                  id="isPublished"
+                  name="isPublished"
+                  value={formData.isPublished ? "true" : "false"}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                  dir="rtl"
                 >
-                  <option value="all">כל הסטטוסים</option>
-                  <option value="published">מפורסמים</option>
-                  <option value="draft">טיוטות</option>
+                  <option value="true">מפורסם</option>
+                  <option value="false">טיוטה</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="category" className="block text-gray-700 font-medium mb-2">קטגוריה</label>
+                <input
+                  type="text"
+                  id="category"
+                  name="category"
+                  value={formData.category || ''}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                  dir="rtl"
+                  placeholder="למשל: השקעות, בנקאות"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="difficulty" className="block text-gray-700 font-medium mb-2">רמת קושי</label>
+                <select
+                  id="difficulty"
+                  name="difficulty"
+                  value={formData.difficulty || 'מתחילים'}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                  dir="rtl"
+                >
+                  <option value="מתחילים">מתחילים</option>
+                  <option value="בינוני">בינוני</option>
+                  <option value="מתקדם">מתקדם</option>
                 </select>
               </div>
             </div>
             
-            {loading ? (
-              <Loader size="small" />
-            ) : terms.length === 0 ? (
-              <div className="bg-gray-50 p-8 rounded-lg text-center">
-                <p className="text-lg text-gray-600 mb-4">
-                  עדיין אין מונחים במילון.
-                </p>
-                <button
-                  onClick={handleCreateNew}
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
-                >
-                  הוסף את המונח הראשון
-                </button>
-              </div>
-            ) : filteredTerms.length === 0 ? (
-              <div className="bg-gray-50 p-8 rounded-lg text-center">
-                <p className="text-lg text-gray-600">
-                  לא נמצאו מונחים התואמים את החיפוש.
-                </p>
-              </div>
-            ) : (
-              <div className="bg-white shadow-md rounded-lg overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th 
-                        className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                        onClick={() => handleSortToggle('term')}
-                      >
-                        <div className="flex items-center justify-end">
-                          מונח
-                          {sortBy === 'term' && (
-                            <span className="mr-1">
-                              {sortDirection === 'asc' ? '↑' : '↓'}
-                            </span>
-                          )}
-                        </div>
-                      </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        סטטוס
-                      </th>
-                      <th 
-                        className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                        onClick={() => handleSortToggle('date')}
-                      >
-                        <div className="flex items-center justify-end">
-                          תאריך יצירה
-                          {sortBy === 'date' && (
-                            <span className="mr-1">
-                              {sortDirection === 'asc' ? '↑' : '↓'}
-                            </span>
-                          )}
-                        </div>
-                      </th>
-                      <th 
-                        className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                        onClick={() => handleSortToggle('order')}
-                      >
-                        <div className="flex items-center justify-end">
-                          סדר
-                          {sortBy === 'order' && (
-                            <span className="mr-1">
-                              {sortDirection === 'asc' ? '↑' : '↓'}
-                            </span>
-                          )}
-                        </div>
-                      </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        פעולות
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {filteredTerms.map((term) => (
-                      <tr key={term._id}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">
-                            {term.term}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${term.isPublished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                            {term.isPublished ? 'מפורסם' : 'טיוטה'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(term.createdAt).toLocaleDateString('he-IL')}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {term.order || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
-                          <button
-                            onClick={() => handleEdit(term)}
-                            className="text-indigo-600 hover:text-indigo-900 ml-3"
-                          >
-                            ערוך
-                          </button>
-                          <button
-                            onClick={() => handleDelete(term._id)}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            מחק
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        </div>
-        
-        {/* Editor - Right Side */}
-        <div className="md:col-span-8 lg:col-span-9">
-          {isEditing ? (
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-bold mb-6">
-                {selectedTerm ? `עריכת המונח: ${selectedTerm.term}` : 'הוספת מונח חדש'}
-              </h2>
-              
-              <form onSubmit={handleSubmit}>
-                <div className="mb-4">
-                  <label htmlFor="term" className="block text-gray-700 font-medium mb-2">שם המונח</label>
-                  <input
-                    type="text"
-                    id="term"
-                    name="term"
-                    value={formData.term}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32a191]"
-                    dir="rtl"
-                  />
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                  <div>
-                    <label htmlFor="isPublished" className="block text-gray-700 font-medium mb-2">סטטוס</label>
-                    <select
-                      id="isPublished"
-                      name="isPublished"
-                      value={formData.isPublished ? "true" : "false"}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32a191]"
-                      dir="rtl"
-                    >
-                      <option value="true">מפורסם</option>
-                      <option value="false">טיוטה</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="category" className="block text-gray-700 font-medium mb-2">קטגוריה</label>
-                    <input
-                      type="text"
-                      id="category"
-                      name="category"
-                      value={formData.category || ''}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32a191]"
-                      dir="rtl"
-                      placeholder="למשל: השקעות, בנקאות"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="difficulty" className="block text-gray-700 font-medium mb-2">רמת קושי</label>
-                    <select
-                      id="difficulty"
-                      name="difficulty"
-                      value={formData.difficulty || 'מתחילים'}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32a191]"
-                      dir="rtl"
-                    >
-                      <option value="מתחילים">מתחילים</option>
-                      <option value="בינוני">בינוני</option>
-                      <option value="מתקדם">מתקדם</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <div className="mb-4">
-                  <label htmlFor="order" className="block text-gray-700 font-medium mb-2">סדר תצוגה</label>
-                  <input
-                    type="number"
-                    id="order"
-                    name="order"
-                    value={formData.order}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32a191]"
-                    dir="ltr"
-                  />
-                </div>
-                
-                <div className="mb-6">
-                  <label className="block text-gray-700 font-medium mb-2">הגדרה</label>
-                  <TinyMCEEditor
-                    initialContent={formData.definition}
-                    onChange={handleEditorChange}
-                    height="300px"
-                  />
-                </div>
-                
-                <div className="flex justify-between">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsEditing(false);
-                      setSelectedTerm(null);
-                    }}
-                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
-                  >
-                    בטל
-                  </button>
-                  
-                  <button
-                    type="submit"
-                    disabled={isSaving || !formData.term || !formData.definition}
-                    className={`px-6 py-2 rounded-md text-white font-medium ${
-                      !isSaving && formData.term && formData.definition
-                        ? 'bg-blue-600 hover:bg-blue-700'
-                        : 'bg-gray-400 cursor-not-allowed'
-                    }`}
-                  >
-                    {isSaving ? (
-                      <div className="flex justify-center items-center">
-                        <Loader text={null} size="small" className="my-0" />
-                      </div>
-                    ) : (
-                      selectedTerm ? 'עדכן מונח' : 'הוסף מונח'
-                    )}
-                  </button>
-                </div>
-              </form>
+            <div className="mb-4">
+              <label htmlFor="order" className="block text-gray-700 font-medium mb-2">סדר תצוגה</label>
+              <input
+                type="number"
+                id="order"
+                name="order"
+                value={formData.order}
+                onChange={handleChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                dir="ltr"
+              />
             </div>
-          ) : (
-            <>
-              {/* Terms list */}
-              <div className="mb-6">
-                <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-                  <button
-                    onClick={handleCreateNew}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition w-full md:w-auto"
-                  >
-                    הוסף מונח חדש
-                  </button>
-                  
-                  <div className="flex flex-1 max-w-2xl gap-2">
-                    {/* Search input */}
-                    <div className="relative flex-1">
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        placeholder="חיפוש מונחים..."
-                        className="w-full p-2 pl-8 border border-gray-300 rounded-md"
-                      />
-                      <svg 
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 absolute right-2 top-2.5 text-gray-400" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                    </div>
-                    
-                    {/* Status filter */}
-                    <select
-                      value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value as 'all' | 'published' | 'draft')}
-                      className="p-2 border border-gray-300 rounded-md"
-                    >
-                      <option value="all">כל הסטטוסים</option>
-                      <option value="published">מפורסמים</option>
-                      <option value="draft">טיוטות</option>
-                    </select>
-                  </div>
-                </div>
-                
-                {loading ? (
-                  <Loader size="small" />
-                ) : terms.length === 0 ? (
-                  <div className="bg-gray-50 p-8 rounded-lg text-center">
-                    <p className="text-lg text-gray-600 mb-4">
-                      עדיין אין מונחים במילון.
-                    </p>
-                    <button
-                      onClick={handleCreateNew}
-                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
-                    >
-                      הוסף את המונח הראשון
-                    </button>
-                  </div>
-                ) : filteredTerms.length === 0 ? (
-                  <div className="bg-gray-50 p-8 rounded-lg text-center">
-                    <p className="text-lg text-gray-600">
-                      לא נמצאו מונחים התואמים את החיפוש.
-                    </p>
+            
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">הגדרה</label>
+              <TinyMCEEditor
+                initialContent={formData.definition}
+                onChange={handleEditorChange}
+                height="300px"
+              />
+            </div>
+            
+            <div className="flex justify-between">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditing(false);
+                  setSelectedTerm(null);
+                }}
+                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+              >
+                בטל
+              </button>
+              
+              <button
+                type="submit"
+                disabled={isSaving || !formData.term || !formData.definition}
+                className={`px-6 py-2 rounded-md text-white font-medium ${
+                  !isSaving && formData.term && formData.definition
+                    ? 'bg-blue-600 hover:bg-blue-700'
+                    : 'bg-gray-400 cursor-not-allowed'
+                }`}
+              >
+                {isSaving ? (
+                  <div className="flex justify-center items-center">
+                    <Loader text={null} size="small" className="my-0" />
                   </div>
                 ) : (
-                  <div className="bg-white shadow-md rounded-lg overflow-hidden">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th 
-                            className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                            onClick={() => handleSortToggle('term')}
-                          >
-                            <div className="flex items-center justify-end">
-                              מונח
-                              {sortBy === 'term' && (
-                                <span className="mr-1">
-                                  {sortDirection === 'asc' ? '↑' : '↓'}
-                                </span>
-                              )}
-                            </div>
-                          </th>
-                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            סטטוס
-                          </th>
-                          <th 
-                            className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                            onClick={() => handleSortToggle('date')}
-                          >
-                            <div className="flex items-center justify-end">
-                              תאריך יצירה
-                              {sortBy === 'date' && (
-                                <span className="mr-1">
-                                  {sortDirection === 'asc' ? '↑' : '↓'}
-                                </span>
-                              )}
-                            </div>
-                          </th>
-                          <th 
-                            className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                            onClick={() => handleSortToggle('order')}
-                          >
-                            <div className="flex items-center justify-end">
-                              סדר
-                              {sortBy === 'order' && (
-                                <span className="mr-1">
-                                  {sortDirection === 'asc' ? '↑' : '↓'}
-                                </span>
-                              )}
-                            </div>
-                          </th>
-                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            פעולות
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredTerms.map((term) => (
-                          <tr key={term._id}>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-medium text-gray-900">
-                                {term.term}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${term.isPublished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                                {term.isPublished ? 'מפורסם' : 'טיוטה'}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {new Date(term.createdAt).toLocaleDateString('he-IL')}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {term.order || '-'}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
-                              <button
-                                onClick={() => handleEdit(term)}
-                                className="text-indigo-600 hover:text-indigo-900 ml-3"
-                              >
-                                ערוך
-                              </button>
-                              <button
-                                onClick={() => handleDelete(term._id)}
-                                className="text-red-600 hover:text-red-900"
-                              >
-                                מחק
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                  selectedTerm ? 'עדכן מונח' : 'הוסף מונח'
                 )}
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : (
+        // Terms list in a full-width table with responsive overflow
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+            <button
+              onClick={handleCreateNew}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition w-full md:w-auto"
+            >
+              הוסף מונח חדש
+            </button>
+            
+            <div className="flex flex-1 max-w-xl gap-2 w-full">
+              {/* Search input */}
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  placeholder="חיפוש מונחים..."
+                  className="w-full p-2 pr-10 border border-gray-300 rounded-md"
+                  dir="rtl"
+                />
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 absolute left-auto right-3 top-2.5 text-gray-400" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
               </div>
-            </>
+              
+              {/* Status filter */}
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as 'all' | 'published' | 'draft')}
+                className="p-2 border border-gray-300 rounded-md"
+                dir="rtl"
+              >
+                <option value="all">כל הסטטוסים</option>
+                <option value="published">מפורסמים</option>
+                <option value="draft">טיוטות</option>
+              </select>
+            </div>
+          </div>
+          
+          {loading ? (
+            <Loader size="small" />
+          ) : terms.length === 0 ? (
+            <div className="bg-gray-50 p-8 rounded-lg text-center">
+              <p className="text-lg text-gray-600 mb-4">
+                עדיין אין מונחים במילון.
+              </p>
+              <button
+                onClick={handleCreateNew}
+                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+              >
+                הוסף את המונח הראשון
+              </button>
+            </div>
+          ) : filteredTerms.length === 0 ? (
+            <div className="bg-gray-50 p-8 rounded-lg text-center">
+              <p className="text-lg text-gray-600">
+                לא נמצאו מונחים התואמים את החיפוש.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-white shadow-md rounded-lg overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200" dir="rtl">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th 
+                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSortToggle('term')}
+                    >
+                      <div className="flex items-center justify-end">
+                        מונח
+                        {sortBy === 'term' && (
+                          <span className="mr-1">
+                            {sortDirection === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </div>
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                      קטגוריה
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                      רמת קושי
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      סטטוס
+                    </th>
+                    <th 
+                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 hidden sm:table-cell"
+                      onClick={() => handleSortToggle('date')}
+                    >
+                      <div className="flex items-center justify-end">
+                        תאריך יצירה
+                        {sortBy === 'date' && (
+                          <span className="mr-1">
+                            {sortDirection === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </div>
+                    </th>
+                    <th 
+                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 hidden sm:table-cell"
+                      onClick={() => handleSortToggle('order')}
+                    >
+                      <div className="flex items-center justify-end">
+                        סדר
+                        {sortBy === 'order' && (
+                          <span className="mr-1">
+                            {sortDirection === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </div>
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      פעולות
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredTerms.map((term) => (
+                    <tr key={term._id}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {term.term}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
+                        {term.category || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
+                        {term.difficulty || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${term.isPublished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                          {term.isPublished ? 'מפורסם' : 'טיוטה'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
+                        {new Date(term.createdAt).toLocaleDateString('he-IL')}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
+                        {term.order || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button
+                          onClick={() => handleEdit(term)}
+                          className="text-indigo-600 hover:text-indigo-900 ml-3"
+                          aria-label="ערוך מונח"
+                        >
+                          ערוך
+                        </button>
+                        <button
+                          onClick={() => handleDelete(term._id)}
+                          className="text-red-600 hover:text-red-900"
+                          aria-label="מחק מונח"
+                        >
+                          מחק
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 } 

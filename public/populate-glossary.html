@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הוספת מונחים למילון פיננסי</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .term-card {
+      transition: all 0.3s ease;
+    }
+    .term-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-8 max-w-screen-lg">
+    <header class="mb-8 text-center">
+      <h1 class="text-3xl font-bold text-[#002F42] mb-2">הוספת מונחים למילון פיננסי</h1>
+      <p class="text-gray-600">כלי זה יוסיף 25 מונחים פיננסיים בעברית למערכת</p>
+    </header>
+
+    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md mb-8">
+      <div class="flex flex-col items-center">
+        <p class="mb-4 text-gray-700 text-center">לחץ על הכפתור כדי להוסיף את המונחים למילון.</p>
+        <p class="mb-6 text-sm text-gray-500 text-center">שים לב: יש להיות מחובר כמנהל לפני הוספת המונחים</p>
+        
+        <button id="runButton" class="bg-[#32a191] text-white px-6 py-3 rounded-md hover:bg-[#2a8a7c] transition-colors focus:outline-none focus:ring-2 focus:ring-[#32a191] focus:ring-opacity-50">
+          הוסף מונחים למילון
+        </button>
+        
+        <div id="status" class="mt-6 p-4 rounded-lg hidden w-full text-center">
+          <!-- Status messages will appear here -->
+        </div>
+        
+        <div id="progress" class="w-full mt-4 hidden">
+          <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div id="progressBar" class="bg-[#32a191] h-2.5 rounded-full" style="width: 0%"></div>
+          </div>
+          <p id="progressText" class="text-sm text-gray-600 mt-2 text-center">0 / 25 מונחים</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mb-8">
+      <h2 class="text-xl font-bold text-[#002F42] mb-4 text-center">רשימת המונחים להוספה</h2>
+      <div id="termsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Terms will be populated here -->
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // Updated import path to use the file in the public directory
+    import { financeTerms, populateGlossary } from '/scripts/populate-glossary.js';
+    
+    const runButton = document.getElementById('runButton');
+    const statusEl = document.getElementById('status');
+    const progressEl = document.getElementById('progress');
+    const progressBarEl = document.getElementById('progressBar');
+    const progressTextEl = document.getElementById('progressText');
+    const termsGridEl = document.getElementById('termsGrid');
+    
+    // Populate terms grid
+    financeTerms.forEach(term => {
+      const card = document.createElement('div');
+      card.className = 'term-card bg-white p-4 rounded-lg shadow-sm border border-gray-100';
+      
+      // Create a more compact layout for each term card
+      card.innerHTML = `
+        <div class="flex justify-between items-start">
+          <h3 class="font-bold text-[#002F42] text-sm">${term.term}</h3>
+          <span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">${term.category}</span>
+        </div>
+        <div class="mt-2 text-xs text-gray-600 line-clamp-2">
+          ${term.definition.replace(/<\/?[^>]+(>|$)/g, "")}
+        </div>
+      `;
+      termsGridEl.appendChild(card);
+    });
+    
+    // Override the console.log to capture progress
+    const originalConsoleLog = console.log;
+    console.log = function(message) {
+      originalConsoleLog.apply(console, arguments);
+      
+      if (message.includes('Added term:')) {
+        updateProgress(message);
+      } else if (message.includes('Starting to populate')) {
+        showProgress();
+      } else if (message.includes('Glossary population completed')) {
+        completeProgress();
+      }
+    };
+    
+    // Override console.error to capture errors
+    const originalConsoleError = console.error;
+    console.error = function(message) {
+      originalConsoleError.apply(console, arguments);
+      
+      if (typeof message === 'string' && message.includes('Failed to add term')) {
+        showError(message);
+      }
+    };
+    
+    // Show status with appropriate styling
+    function showStatus(message, type = 'info') {
+      statusEl.classList.remove('hidden', 'bg-green-50', 'bg-red-50', 'bg-blue-50');
+      statusEl.classList.add(
+        type === 'success' ? 'bg-green-50' : 
+        type === 'error' ? 'bg-red-50' : 'bg-blue-50'
+      );
+      statusEl.innerHTML = `<p class="${
+        type === 'success' ? 'text-green-700' : 
+        type === 'error' ? 'text-red-700' : 'text-blue-700'
+      }">${message}</p>`;
+    }
+    
+    function showProgress() {
+      progressEl.classList.remove('hidden');
+      showStatus('בתהליך הוספת מונחים למילון... אנא המתן', 'info');
+      runButton.disabled = true;
+      runButton.classList.add('opacity-50', 'cursor-not-allowed');
+    }
+    
+    function updateProgress(message) {
+      const addedTerms = document.querySelectorAll('.term-added').length + 1;
+      const percentage = Math.round((addedTerms / financeTerms.length) * 100);
+      
+      progressBarEl.style.width = `${percentage}%`;
+      progressTextEl.textContent = `${addedTerms} / ${financeTerms.length} מונחים`;
+      
+      // Mark term as added in the grid
+      const termName = message.replace('✅ Added term: ', '').trim();
+      const termCards = document.querySelectorAll('.term-card');
+      
+      for (const card of termCards) {
+        if (card.querySelector('h3').textContent === termName) {
+          card.classList.add('term-added', 'bg-green-50', 'border-green-200');
+          break;
+        }
+      }
+    }
+    
+    function showError(message) {
+      const termName = message.replace('❌ Failed to add term: ', '').split(',')[0].trim();
+      const termCards = document.querySelectorAll('.term-card');
+      
+      for (const card of termCards) {
+        if (card.querySelector('h3').textContent === termName) {
+          card.classList.add('bg-red-50', 'border-red-200');
+          break;
+        }
+      }
+    }
+    
+    function completeProgress() {
+      const addedTerms = document.querySelectorAll('.term-added').length;
+      showStatus(`הוספת המונחים הסתיימה! נוספו ${addedTerms} מתוך ${financeTerms.length} מונחים.`, 'success');
+      runButton.disabled = false;
+      runButton.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+    
+    // Setup button action
+    runButton.addEventListener('click', async () => {
+      try {
+        // Check if user is logged in as admin
+        const verifyResponse = await fetch('/api/admin/verify-auth');
+        if (!verifyResponse.ok) {
+          throw new Error('יש להתחבר כמנהל כדי להוסיף מונחים');
+        }
+        
+        // Reset any previous runs
+        document.querySelectorAll('.term-added').forEach(el => {
+          el.classList.remove('term-added', 'bg-green-50', 'border-green-200');
+        });
+        document.querySelectorAll('.bg-red-50').forEach(el => {
+          el.classList.remove('bg-red-50', 'border-red-200');
+        });
+        
+        // Run the script
+        populateGlossary();
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+  </script>
+</body>
+</html> 

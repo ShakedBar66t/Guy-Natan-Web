@@ -103,12 +103,12 @@ export default function ProgramsSection() {
         </div>
       </MaxWidthWrapper>
 
-      <div className="container mx-auto max-w-5xl px-4">
+      <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {programs.map((program) => (
             <div 
               key={program.id} 
-              className="bg-white border-2 border-black hover:border-[#32a191] transition-colors duration-300 rounded-lg shadow-md p-8 flex flex-col h-[450px] relative"
+              className="bg-white border-2 border-black hover:border-[#32a191] transition-colors duration-300 rounded-lg shadow-md p-6 flex flex-col h-[450px] relative"
               onMouseEnter={() => setHoveredCard(program.id)}
               onMouseLeave={() => setHoveredCard(null)}
             >

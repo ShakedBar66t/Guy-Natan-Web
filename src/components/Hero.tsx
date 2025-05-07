@@ -29,8 +29,8 @@ export default function Hero() {
               src="https://player.vimeo.com/video/1060951547?h=42a836d1a9&badge=0&autopause=0&player_id=0&app_id=58479"
               className="absolute top-0 left-0 w-full h-full"
               frameBorder="0"
-              allow="autoplay; fullscreen; picture-in-picture"
-              allowFullScreen
+              allow="autoplay; picture-in-picture"
+              allowFullScreen={true}
               title="גיא נתן סרטון"
             ></iframe>
           </div>

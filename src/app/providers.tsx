@@ -1,7 +1,7 @@
 'use client';
 
 import React, { ReactNode, ErrorInfo } from 'react';
-import TinyMCEScript from '@/components/TinyMCEScript';
+import ClientTinyMCEScript from '@/components/ClientTinyMCEScript';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -59,7 +59,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <ErrorBoundary>
-      <TinyMCEScript />
+      <ClientTinyMCEScript />
       {children}
     </ErrorBoundary>
   );

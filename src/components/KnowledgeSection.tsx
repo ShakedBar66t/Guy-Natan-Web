@@ -38,8 +38,11 @@ export default function KnowledgeSection() {
                 }
                 const data = await response.json();
                 
+                // Access the posts array from the API response
+                const allPosts = data.posts || [];
+                
                 // Filter for published posts and take the latest 3
-                const publishedPosts = data
+                const publishedPosts = allPosts
                     .filter((post: BlogPost) => post.isPublished)
                     .sort((a: BlogPost, b: BlogPost) => {
                         const dateA = a.publishedAt ? new Date(a.publishedAt) : new Date(a.createdAt);

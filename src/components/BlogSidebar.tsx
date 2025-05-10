@@ -1,5 +1,6 @@
 "use client";
 
+// BlogSidebar component - Updated for deployment
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';

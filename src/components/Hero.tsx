@@ -1,7 +1,16 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 
 export default function Hero() {
+  // Function to scroll to the programs section
+  const scrollToPrograms = () => {
+    const programsSection = document.getElementById('programs');
+    if (programsSection) {
+      programsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="py-6 lg:py-20 bg-[#022E41]">
       <div className="container mx-auto px-4">
@@ -15,10 +24,15 @@ export default function Hero() {
           <span className="font-bold"> החלטות חכמות</span>.
         </p>
         <div className="flex justify-center my-10 gap-10">
-          <button className="flex-[0.5] bg-[#022E41] border border-white rounded-md text-white p-5 text-xl hover:bg-white hover:text-[#022E41]">
-            בואו נתחיל ללמוד
-          </button>
-          <button className="flex-[0.5] bg-white text-[#022E41] p-5 border border-[#022E41] rounded-md text-xl hover:bg-[#022E41] hover:text-white hover:border-white">
+          <Link href="/blog" className="flex-[0.5]">
+            <button className="w-full bg-[#022E41] border border-white rounded-md text-white p-5 text-xl hover:bg-white hover:text-[#022E41]">
+              בואו נתחיל ללמוד
+            </button>
+          </Link>
+          <button 
+            onClick={scrollToPrograms}
+            className="flex-[0.5] bg-white text-[#022E41] p-5 border border-[#022E41] rounded-md text-xl hover:bg-[#022E41] hover:text-white hover:border-white"
+          >
             המסלולים שלנו
           </button>
         </div>

@@ -77,7 +77,7 @@ export default function ProgramsSection() {
   }, []);
 
   return (
-    <section>
+    <section id="programs">
       <div className="container mx-auto max-w-5xl px-4">
         <h2 className="text-3xl font-bold text-center mb-12">
           אתם בוחרים את התוכנית<br />

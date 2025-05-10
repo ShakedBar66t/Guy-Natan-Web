@@ -10,11 +10,39 @@ const assistant = Assistant({
 });
 
 export const metadata = {
-  title: "גיא נתן בע״מ",
-  description: "Official website...",
-  icons:{
-    icon: 'https://res.cloudinary.com/drld1bejg/image/upload/v1743255601/GuyNatanLogo-removebg-preview_atdnde.png'
-  }
+  title: "גיא נתן | ייעוץ פיננסי וליווי כלכלי",
+  description: "האתר הרשמי של גיא נתן - ייעוץ וליווי פיננסי, עדכונים מעולם ההשקעות, מאמרים וידע כלכלי שיעזור לך לקבל החלטות פיננסיות חכמות יותר.",
+  icons: {
+    icon: 'https://res.cloudinary.com/drld1bejg/image/upload/v1743255601/GuyNatanLogo-removebg-preview_atdnde.png',
+    apple: 'https://res.cloudinary.com/drld1bejg/image/upload/v1743255601/GuyNatanLogo-removebg-preview_atdnde.png',
+  },
+  metadataBase: new URL('https://guy-natan.vercel.app'),
+  openGraph: {
+    title: 'גיא נתן | ייעוץ פיננסי וליווי כלכלי',
+    description: 'האתר הרשמי של גיא נתן - ייעוץ וליווי פיננסי, עדכונים מעולם ההשקעות, מאמרים וידע כלכלי שיעזור לך לקבל החלטות פיננסיות חכמות יותר.',
+    url: 'https://guy-natan.vercel.app',
+    siteName: 'גיא נתן',
+    locale: 'he_IL',
+    type: 'website',
+    images: [
+      {
+        url: 'https://res.cloudinary.com/drld1bejg/image/upload/v1743255601/GuyNatanLogo-removebg-preview_atdnde.png',
+        width: 800,
+        height: 600,
+        alt: 'גיא נתן לוגו',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'גיא נתן | ייעוץ פיננסי וליווי כלכלי',
+    description: 'האתר הרשמי של גיא נתן - ייעוץ וליווי פיננסי, עדכונים מעולם ההשקעות, מאמרים וידע כלכלי.',
+    images: ['https://res.cloudinary.com/drld1bejg/image/upload/v1743255601/GuyNatanLogo-removebg-preview_atdnde.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

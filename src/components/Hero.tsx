@@ -1,8 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 
 export default function Hero() {
+  const videoRef = useRef<HTMLIFrameElement>(null);
+
   // Function to scroll to the programs section
   const scrollToPrograms = () => {
     const programsSection = document.getElementById('programs');
@@ -11,42 +13,83 @@ export default function Hero() {
     }
   };
 
+  // Setup the video player when component mounts
+  useEffect(() => {
+    // Create a message listener to handle Vimeo API events
+    const handleMessage = (event: MessageEvent) => {
+      // Only handle messages from Vimeo
+      if (event.origin !== "https://player.vimeo.com") return;
+      
+      try {
+        const data = JSON.parse(event.data);
+        // If the player is ready, play the video
+        if (data.event === "ready" && videoRef.current) {
+          // Send play command to the iframe
+          videoRef.current.contentWindow?.postMessage(
+            JSON.stringify({
+              method: "play",
+              value: ""
+            }),
+            "https://player.vimeo.com"
+          );
+        }
+      } catch (e) {
+        // Ignore parsing errors
+      }
+    };
+
+    // Add event listener
+    window.addEventListener("message", handleMessage);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
+
   return (
     <section className="py-6 lg:py-20 bg-[#022E41]">
       <div className="container mx-auto px-4">
-        <h2 className="text-[47px] font-normal text-center text-white ">
+        <h2 className="text-[32px] md:text-[47px] font-normal text-center text-white ">
           גן עדן פיננסי
         </h2>
-        <p className="mt-4 text-center text-[26px] text-white">
+        <p className="mt-4 text-center text-[18px] md:text-[26px] text-white">
           הבית שלך לחדשות ועדכונים חמים מהעולם הפיננסי ושוק ההון.
           <br />
           כל מה שצריך לדעת כדי לקבל{" "}
           <span className="font-bold"> החלטות חכמות</span>.
         </p>
-        <div className="flex justify-center my-10 gap-10">
-          <Link href="/blog" className="flex-[0.5]">
-            <button className="w-full bg-[#022E41] border border-white rounded-md text-white p-5 text-xl hover:bg-white hover:text-[#022E41]">
-              בואו נתחיל ללמוד
+        
+        {/* Video first on mobile */}
+        <div className="flex flex-col md:flex-col-reverse">
+          {/* Video */}
+          <div className="w-full max-w-4xl mx-auto overflow-hidden rounded-lg shadow-xl mt-6 mb-6 md:mb-0 md:mt-0">
+            <div className="relative pt-[56.25%]">
+              <iframe
+                ref={videoRef}
+                src="https://player.vimeo.com/video/1060951547?h=42a836d1a9&api=1&background=0&autopause=0&loop=1&muted=0&title=0&byline=0&portrait=0"
+                className="absolute top-0 left-0 w-full h-full"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen={true}
+                title="גיא נתן סרטון"
+              ></iframe>
+            </div>
+          </div>
+          
+          {/* Buttons - below video on mobile, above on desktop */}
+          <div className="flex flex-col md:flex-row justify-center my-6 md:my-10 gap-4 md:gap-10">
+            <Link href="/blog" className="md:flex-[0.5] w-full">
+              <button className="w-full bg-[#022E41] border border-white rounded-md text-white p-3 md:p-5 text-lg md:text-xl hover:bg-white hover:text-[#022E41]">
+                בואו נתחיל ללמוד
+              </button>
+            </Link>
+            <button 
+              onClick={scrollToPrograms}
+              className="w-full md:flex-[0.5] bg-white text-[#022E41] p-3 md:p-5 border border-[#022E41] rounded-md text-lg md:text-xl hover:bg-[#022E41] hover:text-white hover:border-white"
+            >
+              המסלולים שלנו
             </button>
-          </Link>
-          <button 
-            onClick={scrollToPrograms}
-            className="flex-[0.5] bg-white text-[#022E41] p-5 border border-[#022E41] rounded-md text-xl hover:bg-[#022E41] hover:text-white hover:border-white"
-          >
-            המסלולים שלנו
-          </button>
-        </div>
-
-        <div className="w-full max-w-4xl mx-auto overflow-hidden rounded-lg shadow-xl">
-          <div className="relative pt-[56.25%]">
-            <iframe
-              src="https://player.vimeo.com/video/1060951547?h=42a836d1a9&badge=0&autopause=0&player_id=0&app_id=58479"
-              className="absolute top-0 left-0 w-full h-full"
-              frameBorder="0"
-              allow="autoplay; fullscreen; picture-in-picture"
-              allowFullScreen={true}
-              title="גיא נתן סרטון"
-            ></iframe>
           </div>
         </div>
       </div>

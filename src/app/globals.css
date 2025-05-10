@@ -7,6 +7,14 @@ html, body {
     overflow-y: auto;
 }
 
+/* Position the trading widgets so they don't stick when scrolling */
+[id*="tradingview-widget"],
+.tradingview-widget-container,
+iframe[src*="tradingview.com"] {
+  position: absolute !important;
+  z-index: 1 !important;
+}
+
 /* WordPress Content Styles */
 .wordpress-content h1,
 .wordpress-content h2,
@@ -99,7 +107,12 @@ html, body {
   /* Fix to ensure Header interactive elements work on mobile */
   header {
     position: relative;
-    z-index: 10000;
+    z-index: 10001;
+  }
+  
+  /* Add padding at the top of the page on mobile to prevent overlap */
+  body {
+    padding-top: 0;
   }
 }
 

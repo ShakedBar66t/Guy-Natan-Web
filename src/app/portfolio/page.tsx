@@ -76,11 +76,11 @@ export default function PortfolioPage() {
     let stocksToBuy;
     
     if (currencyType === 'ILS') {
-      // If portfolio is in ILS, convert it to USD for calculation
-      // Formula: (Portfolio Value in ILS * Percentage) / (Stock Price in USD * Dollar Rate)
-      stocksToBuy = (portfolio * (percentage / 100)) / (stock * dollar);
+      // If portfolio is in ILS and stock price is in ILS
+      // Formula: (Portfolio Value in ILS * Percentage) / Stock Price in ILS
+      stocksToBuy = (portfolio * (percentage / 100)) / stock;
     } else {
-      // If portfolio is already in USD, no need for currency conversion
+      // If portfolio is in USD and stock price is in USD
       // Formula: (Portfolio Value in USD * Percentage) / Stock Price in USD
       stocksToBuy = (portfolio * (percentage / 100)) / stock;
     }
@@ -92,6 +92,8 @@ export default function PortfolioPage() {
   // Toggle between USD and ILS input
   const toggleCurrency = (currency: 'ILS' | 'USD') => {
     setCurrencyType(currency);
+    // Reset stock price when changing currency type
+    setStockPrice('');
   };
   
   // Reset form
@@ -137,14 +139,14 @@ export default function PortfolioPage() {
                   className={`px-4 py-2 rounded-lg transition-colors ${currencyType === 'ILS' ? 'bg-[#32a191] text-white' : 'bg-transparent text-gray-700'}`}
                   onClick={() => toggleCurrency('ILS')}
                 >
-                  תיק בשקלים (₪)
+                  פעימות בשקל (₪)
                 </button>
                 <button
                   type="button"
                   className={`px-4 py-2 rounded-lg transition-colors ${currencyType === 'USD' ? 'bg-[#32a191] text-white' : 'bg-transparent text-gray-700'}`}
                   onClick={() => toggleCurrency('USD')}
                 >
-                  תיק בדולרים ($)
+                  פעימות בדולר ($)
                 </button>
               </div>
             </div>
@@ -186,14 +188,14 @@ export default function PortfolioPage() {
             
             <div className="flex flex-col">
               <label htmlFor="stockPrice" className="mb-2 font-medium text-[#002F42]">
-                מחיר מניה ($):
+                מחיר מניה {currencyType === 'ILS' ? '(₪)' : '($)'}:
               </label>
               <input
                 id="stockPrice"
                 type="number"
                 value={stockPrice}
                 onChange={(e) => setStockPrice(e.target.value ? Number(e.target.value) : '')}
-                placeholder="150"
+                placeholder={currencyType === 'ILS' ? "50" : "150"}
                 className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#32a191]"
                 dir="rtl"
                 min="0"

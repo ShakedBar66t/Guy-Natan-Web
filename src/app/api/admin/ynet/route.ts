@@ -1,86 +1,80 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import YnetArticle from '@/models/YnetArticle';
+import { verifyTokenWithClaims } from '@/lib/auth';
 
-// Get all Ynet articles
-export async function GET() {
+// GET - Fetch all YNET articles
+export async function GET(request: NextRequest) {
   try {
     await dbConnect();
     
-    const articles = await YnetArticle.find({})
-      .sort({ publishedAt: -1 }) // Sort by newest first
-      .lean(); // Convert to plain JavaScript objects
+    // Get query parameters
+    const searchParams = request.nextUrl.searchParams;
+    const limitParam = searchParams.get('limit');
     
-    return NextResponse.json(articles, { status: 200 });
+    // Parse limit if provided
+    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+    
+    // Build query
+    let query = YnetArticle.find()
+      .sort({ publishDate: -1 }); // Sort by publish date, newest first
+    
+    // Apply limit if specified
+    if (limit && !isNaN(limit)) {
+      query = query.limit(limit);
+    }
+    
+    const articles = await query.lean(); // Convert to plain JavaScript objects
+    
+    console.log(`Fetched ${articles.length} YNET articles`);
+    
+    return NextResponse.json({
+      articles,
+      total: articles.length
+    }, { status: 200 });
   } catch (error) {
-    console.error('Error fetching Ynet articles:', error);
+    console.error('Error fetching YNET articles:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to fetch Ynet articles', error: String(error) },
+      { success: false, message: 'Failed to fetch YNET articles', error: String(error) },
       { status: 500 }
     );
   }
 }
 
-// Create a new Ynet article
+// POST - Create new YNET article
 export async function POST(request: NextRequest) {
   try {
-    await dbConnect();
+    // Verify admin token
+    const token = request.cookies.get('token')?.value;
     
-    const data = await request.json();
-    console.log('Creating Ynet article with data:', data);
-    
-    // Set published date if not provided
-    if (!data.publishedAt) {
-      data.publishedAt = new Date();
-    }
-    
-    // Ensure we have a slug - generate from title as fallback
-    if (!data.slug) {
-      data.slug = data.title
-        .toLowerCase()
-        .replace(/[^\w\sא-ת]/g, '')
-        .replace(/\s+/g, '-')
-        .trim();
-        
-      // Add timestamp to ensure uniqueness
-      data.slug = `${data.slug}-${Date.now()}`;
-    }
-    
-    // Check if slug already exists
-    const existingArticle = await YnetArticle.findOne({ slug: data.slug });
-    
-    // If slug exists, make it unique by adding a timestamp
-    if (existingArticle) {
-      data.slug = `${data.slug}-${Date.now()}`;
-    }
-    
-    const article = await YnetArticle.create(data);
-    console.log('Ynet article created successfully:', article);
-    
-    return NextResponse.json(article, { status: 201 });
-  } catch (error) {
-    console.error('Error creating Ynet article. Full error:', error);
-    
-    // Check if it's a validation error
-    if (error instanceof Error && 'errors' in (error as any)) {
-      const validationErrors = Object.values((error as any).errors || {})
-        .map((err: any) => err.message)
-        .join(', ');
-      
-      console.error('Validation errors:', validationErrors);
-      
+    if (!token) {
       return NextResponse.json(
-        { 
-          success: false, 
-          message: 'Failed to create Ynet article due to validation errors', 
-          error: validationErrors
-        },
-        { status: 400 }
+        { success: false, message: 'Authentication required' },
+        { status: 401 }
       );
     }
     
+    const { isAdmin } = await verifyTokenWithClaims(token);
+    
+    if (!isAdmin) {
+      return NextResponse.json(
+        { success: false, message: 'Admin privileges required' },
+        { status: 403 }
+      );
+    }
+    
+    await dbConnect();
+    
+    const data = await request.json();
+    
+    // Create a new article
+    const article = await YnetArticle.create(data);
+    
+    return NextResponse.json(article, { status: 201 });
+  } catch (error) {
+    console.error('Error creating YNET article:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to create Ynet article', error: String(error) },
+      { success: false, message: 'Failed to create YNET article', error: String(error) },
       { status: 500 }
     );
   }

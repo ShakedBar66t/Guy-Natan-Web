@@ -67,17 +67,15 @@ export default function YnetArticleEditor({ article, isEditing = false }: YnetAr
         publishedAt: new Date(formData.publishedAt).toISOString()
       };
       
-      // Ensure we have a slug - generate from title as fallback
-      if (!apiData.slug) {
-        apiData.slug = apiData.title
-          .toLowerCase()
-          .replace(/[^\w\sא-ת]/g, '')
-          .replace(/\s+/g, '-')
-          .trim();
-          
-        // Add timestamp to ensure uniqueness
-        apiData.slug = `${apiData.slug}-${Date.now()}`;
-      }
+      // Generate slug from title and add timestamp to ensure uniqueness
+      apiData.slug = formData.title
+        .toLowerCase()
+        .replace(/[^\w\sא-ת]/g, '')
+        .replace(/\s+/g, '-')
+        .trim();
+        
+      // Add timestamp to ensure uniqueness
+      apiData.slug = `${apiData.slug}-${Date.now()}`;
       
       const url = isEditing && article?._id 
         ? `/api/admin/ynet/${article._id}` 
@@ -142,24 +140,6 @@ export default function YnetArticleEditor({ article, isEditing = false }: YnetAr
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
             required
           />
-        </div>
-        
-        <div>
-          <label htmlFor="slug" className="block text-sm font-medium text-gray-700">
-            Slug (מזהה ייחודי בכתובת URL)
-          </label>
-          <input
-            type="text"
-            id="slug"
-            name="slug"
-            value={formData.slug}
-            onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-            required
-          />
-          <p className="mt-1 text-sm text-gray-500">
-            נוצר אוטומטית מהכותרת. מומלץ לא לשנות אלא אם יש צורך.
-          </p>
         </div>
         
         <div>

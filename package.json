@@ -54,9 +54,10 @@
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.503.0",
     "mongodb": "^6.15.0",
-    "mongoose": "^8.13.2",
+    "mongoose": "^8.14.2",
     "nanoid": "^5.1.5",
     "next": "15.2.4",
+    "node-fetch": "^3.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
@@ -78,5 +79,18 @@
     "string-replace-loader": "^3.1.0",
     "tailwindcss": "^3.3.2",
     "typescript": "^5"
-  }
+  },
+  "description": "This is the codebase for Guy Natan's financial blog, built with Next.js and MongoDB.",
+  "main": "createAdmin.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShakedBar66t/Guy-Natan-Web.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShakedBar66t/Guy-Natan-Web/issues"
+  },
+  "homepage": "https://github.com/ShakedBar66t/Guy-Natan-Web#readme"
 }

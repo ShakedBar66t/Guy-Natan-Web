@@ -14,6 +14,11 @@ interface YnetArticle {
   updatedAt: string;
 }
 
+interface ApiResponse {
+  articles: YnetArticle[];
+  total: number;
+}
+
 export default function YnetManagementPage() {
   const router = useRouter();
   const [articles, setArticles] = useState<YnetArticle[]>([]);
@@ -32,8 +37,18 @@ export default function YnetManagementPage() {
       if (!response.ok) {
         throw new Error('Failed to fetch Ynet articles');
       }
-      const data = await response.json();
-      setArticles(data);
+      const data: ApiResponse = await response.json();
+      
+      // Check if data has the expected structure
+      if (data && Array.isArray(data.articles)) {
+        setArticles(data.articles);
+      } else if (Array.isArray(data)) {
+        // Fallback for backward compatibility if API returns array directly
+        setArticles(data);
+      } else {
+        console.error('Unexpected data format:', data);
+        throw new Error('Unexpected data format returned from API');
+      }
     } catch (err) {
       console.error('Error fetching Ynet articles:', err);
       setError('אירעה שגיאה בטעינת הכתבות. נסה שוב מאוחר יותר.');

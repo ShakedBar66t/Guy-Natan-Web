@@ -1,36 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import YnetArticle from '@/models/YnetArticle';
+import FAQ from '@/models/FAQ';
 import { verifyTokenWithClaims } from '@/lib/auth';
 
-// GET - Fetch a specific YNET article by ID
-export async function GET(request: NextRequest, context: { params: { id: string } }) {
+// GET - Get a specific FAQ
+export async function GET(
+  request: NextRequest,
+  context: { params: { id: string } }
+) {
   try {
     await dbConnect();
     
     const id = context.params.id;
     
-    const article = await YnetArticle.findById(id).lean();
+    const faq = await FAQ.findById(id).lean();
     
-    if (!article) {
+    if (!faq) {
       return NextResponse.json(
-        { success: false, message: 'YNET article not found' },
+        { success: false, message: 'FAQ not found' },
         { status: 404 }
       );
     }
     
-    return NextResponse.json(article, { status: 200 });
+    return NextResponse.json(faq, { status: 200 });
   } catch (error) {
-    console.error('Error fetching YNET article:', error);
+    console.error('Error fetching FAQ:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to fetch YNET article', error: String(error) },
+      { success: false, message: 'Failed to fetch FAQ', error: String(error) },
       { status: 500 }
     );
   }
 }
 
-// PATCH - Update a specific YNET article
-export async function PATCH(request: NextRequest, context: { params: { id: string } }) {
+// PATCH - Update a FAQ
+export async function PATCH(
+  request: NextRequest,
+  context: { params: { id: string } }
+) {
   try {
     // Verify admin token
     const token = request.cookies.get('token')?.value;
@@ -56,31 +62,39 @@ export async function PATCH(request: NextRequest, context: { params: { id: strin
     const id = context.params.id;
     const data = await request.json();
     
-    const article = await YnetArticle.findByIdAndUpdate(
+    const faq = await FAQ.findByIdAndUpdate(
       id,
-      { $set: data },
-      { new: true, runValidators: true }
+      {
+        $set: data,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
     ).lean();
     
-    if (!article) {
+    if (!faq) {
       return NextResponse.json(
-        { success: false, message: 'YNET article not found' },
+        { success: false, message: 'FAQ not found' },
         { status: 404 }
       );
     }
     
-    return NextResponse.json(article, { status: 200 });
+    return NextResponse.json(faq, { status: 200 });
   } catch (error) {
-    console.error('Error updating YNET article:', error);
+    console.error('Error updating FAQ:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to update YNET article', error: String(error) },
+      { success: false, message: 'Failed to update FAQ', error: String(error) },
       { status: 500 }
     );
   }
 }
 
-// DELETE - Delete a specific YNET article
-export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
+// DELETE - Delete a FAQ
+export async function DELETE(
+  request: NextRequest,
+  context: { params: { id: string } }
+) {
   try {
     // Verify admin token
     const token = request.cookies.get('token')?.value;
@@ -105,23 +119,23 @@ export async function DELETE(request: NextRequest, context: { params: { id: stri
     
     const id = context.params.id;
     
-    const article = await YnetArticle.findByIdAndDelete(id).lean();
+    const faq = await FAQ.findByIdAndDelete(id).lean();
     
-    if (!article) {
+    if (!faq) {
       return NextResponse.json(
-        { success: false, message: 'YNET article not found' },
+        { success: false, message: 'FAQ not found' },
         { status: 404 }
       );
     }
     
     return NextResponse.json(
-      { success: true, message: 'YNET article deleted successfully' },
+      { success: true, message: 'FAQ deleted successfully' },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Error deleting YNET article:', error);
+    console.error('Error deleting FAQ:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to delete YNET article', error: String(error) },
+      { success: false, message: 'Failed to delete FAQ', error: String(error) },
       { status: 500 }
     );
   }

@@ -151,7 +151,7 @@ export default function BlogPostPage() {
 
       {/* Blog Content */}
       <MaxWidthWrapper className="py-12">
-        <div className="flex flex-col-reverse lg:flex-row gap-8" dir="rtl">
+        <div className="flex flex-col lg:flex-row gap-8" dir="rtl">
           {/* Main Content */}
           <div className="flex-1">
             <div className="max-w-3xl mx-auto">
@@ -188,7 +188,8 @@ export default function BlogPostPage() {
                 </div>
               )}
 
-              <div className="mt-12 pt-6 border-t border-gray-200">
+              {/* "Back to all articles" button hidden on mobile, visible on desktop */}
+              <div className="mt-12 pt-6 border-t border-gray-200 hidden lg:block">
                 <Link 
                   href="/blog"
                   className="inline-block text-[#32a191] font-medium hover:text-[#002F42] transition-colors"
@@ -215,6 +216,16 @@ export default function BlogPostPage() {
               </div>
             </div>
           </div>
+        </div>
+        
+        {/* "Back to all articles" button visible on mobile only, positioned after sidebar */}
+        <div className="mt-6 text-center lg:hidden">
+          <Link 
+            href="/blog"
+            className="inline-block bg-[#32a191] text-white px-4 py-2 rounded-md hover:bg-[#002F42] transition-colors"
+          >
+            חזרה לכל המאמרים
+          </Link>
         </div>
       </MaxWidthWrapper>
     </>

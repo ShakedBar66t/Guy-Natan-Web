@@ -219,7 +219,7 @@ export default function BlogSidebar({ currentPostId }: BlogSidebarProps) {
           </div>
         )}
         
-        <div className="mt-4 text-center">
+        <div className="mt-4 text-center hidden lg:block">
           <Link 
             href="/blog"
             className="inline-block text-[#32a191] font-medium hover:text-[#002F42] transition-colors"

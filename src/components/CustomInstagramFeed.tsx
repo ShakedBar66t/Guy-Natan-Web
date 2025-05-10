@@ -17,7 +17,7 @@ export default function CustomInstagramFeed() {
         <div 
           dangerouslySetInnerHTML={{
             __html: `<iframe 
-              src="//lightwidget.com/widgets/141602b6c3ee5ec2bd8f82d250346bb0.html" 
+              src="https://cdn.lightwidget.com/widgets/141602b6c3ee5ec2bd8f82d250346bb0.html" 
               scrolling="no" 
               allowtransparency="true" 
               class="lightwidget-widget" 

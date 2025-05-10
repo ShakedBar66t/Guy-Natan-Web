@@ -11,6 +11,7 @@ const ClientHostagesTicker = dynamic(() => import('@/components/ClientHostagesTi
 const Header = dynamic(() => import('@/components/Header'), { ssr: false });
 const Footer = dynamic(() => import('@/components/Footer'), { ssr: false });
 const ContactFormSection = dynamic(() => import('@/components/ContactFormSection'), { ssr: false });
+const CustomInstagramFeed = dynamic(() => import('@/components/CustomInstagramFeed'), { ssr: false });
 
 export default function ClientLayout({ children }: { children: ReactNode }) {
   // Only render content after mounting on client
@@ -37,6 +38,7 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
           <Header />
           <main>{children}</main>
           <ContactFormSection />
+          <CustomInstagramFeed />
           <Footer />
           <ClientWhatsAppButton />
           <ClientHostagesTicker />

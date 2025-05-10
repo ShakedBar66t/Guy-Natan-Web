@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
 import Loader from '@/components/Loader';
+import BlogSidebar from '@/components/BlogSidebar';
+import ShareButtons from '@/components/ShareButtons';
 
 interface FinancialTerm {
   _id: string;
@@ -38,8 +40,12 @@ export default function BlogPostPage() {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentUrl, setCurrentUrl] = useState<string>('');
 
   useEffect(() => {
+    // Set the current URL for sharing
+    setCurrentUrl(window.location.href);
+    
     async function fetchBlogPost() {
       try {
         // Special case for 'new' which might be incorrectly navigated to
@@ -145,47 +151,69 @@ export default function BlogPostPage() {
 
       {/* Blog Content */}
       <MaxWidthWrapper className="py-12">
-        <div className="max-w-3xl mx-auto" dir="rtl">
-          {post.coverImage && (
-            <div className="mb-8 rounded-lg overflow-hidden">
-              <img 
-                src={post.coverImage} 
-                alt={post.title} 
-                className="w-full h-auto" 
+        <div className="flex flex-col-reverse lg:flex-row gap-8" dir="rtl">
+          {/* Main Content */}
+          <div className="flex-1">
+            <div className="max-w-3xl mx-auto">
+              {post.coverImage && (
+                <div className="mb-8 rounded-lg overflow-hidden">
+                  <img 
+                    src={post.coverImage} 
+                    alt={post.title} 
+                    className="w-full h-auto" 
+                  />
+                </div>
+              )}
+              
+              <div 
+                className="prose prose-lg prose-headings:text-[#002F42] prose-headings:font-bold prose-ul:list-disc prose-ol:list-decimal prose-ul:pr-5 prose-ol:pr-5 prose-li:mb-1 prose-p:mb-4 max-w-none rtl"
+                dangerouslySetInnerHTML={{ __html: post.content }}
               />
-            </div>
-          )}
-          
-          <div 
-            className="prose prose-lg max-w-none"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
-          
-          {/* Related Terms Section */}
-          {post.relatedTerms && post.relatedTerms.length > 0 && (
-            <div className="mt-10 pt-8 border-t border-gray-200">
-              <h3 className="text-xl font-bold text-[#002F42] mb-4">מושגים פיננסיים קשורים</h3>
-              <div className="flex flex-wrap gap-2">
-                {post.relatedTerms.map(term => (
-                  <Link 
-                    key={term._id} 
-                    href={`/glossary/${term.slug}`}
-                    className="inline-block bg-gray-100 hover:bg-gray-200 text-[#32a191] px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                  >
-                    {term.term}
-                  </Link>
-                ))}
+              
+              {/* Related Terms Section */}
+              {post.relatedTerms && post.relatedTerms.length > 0 && (
+                <div className="mt-10 pt-8 border-t border-gray-200">
+                  <h3 className="text-xl font-bold text-[#002F42] mb-4">מושגים פיננסיים קשורים</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {post.relatedTerms.map(term => (
+                      <Link 
+                        key={term._id} 
+                        href={`/glossary/${term.slug}`}
+                        className="inline-block bg-gray-100 hover:bg-gray-200 text-[#32a191] px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                      >
+                        {term.term}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-12 pt-6 border-t border-gray-200">
+                <Link 
+                  href="/blog"
+                  className="inline-block text-[#32a191] font-medium hover:text-[#002F42] transition-colors"
+                >
+                  {'<<'} חזרה לכל המאמרים
+                </Link>
               </div>
             </div>
-          )}
-
-          <div className="mt-12 pt-6 border-t border-gray-200">
-            <Link 
-              href="/blog"
-              className="inline-block text-[#32a191] font-medium hover:text-[#002F42] transition-colors"
-            >
-              {'<<'} חזרה לכל המאמרים
-            </Link>
+          </div>
+          
+          {/* Sidebar */}
+          <div className="lg:w-80 xl:w-96 lg:flex-shrink-0 mb-8 lg:mb-0">
+            <div className="lg:sticky lg:top-8">
+              <BlogSidebar currentPostId={post._id} />
+              
+              {/* Share Buttons - added to bottom of sidebar */}
+              <div className="mt-6 bg-white rounded-lg shadow-md p-6">
+                <h3 className="text-xl font-bold text-[#002F42] mb-4 border-b border-gray-200 pb-2 text-center" dir="rtl">שתפו את המאמר</h3>
+                <ShareButtons 
+                  url={currentUrl} 
+                  title={post.title} 
+                  excerpt={post.excerpt || 'סקירה כלכלית מקצועית מבית גיא נתן'} 
+                />
+              </div>
+            </div>
           </div>
         </div>
       </MaxWidthWrapper>

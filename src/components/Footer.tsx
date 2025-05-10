@@ -5,10 +5,10 @@ import { FaFacebookF, FaInstagram, FaTiktok, FaYoutube, FaSpotify, FaApple } fro
 
 export default function Footer() {
     return (
-        <footer className="bg-[#002F42] py-16 border-t border-gray-300">
+        <footer className="bg-[#002F42] pt-0 pb-16 border-t-0 mt-0" style={{ marginTop: 0 }}>
             <div className="container mx-auto max-w-5xl px-4">
                 {/* Main footer columns */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center pt-16">
                     {/* Column 1: About Guy Natan (Left for LTR, but visually right in RTL) */}
                     <div>
                         <h4 className="text-xl font-bold text-white mb-4">גיא נתן</h4>

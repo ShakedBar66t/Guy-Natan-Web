@@ -20,7 +20,7 @@ export default function TinyMCEScript() {
   if (!shouldLoad) {
     return null;
   }
-
+  
   return (
     <Script
       src="https://cdn.tiny.cloud/1/l9jp7dztnnrgwndr7c2jgmuo1qxht4324yt0p53g0qlfby1w/tinymce/6/tinymce.min.js"

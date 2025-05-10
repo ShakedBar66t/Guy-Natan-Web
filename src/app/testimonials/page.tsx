@@ -105,7 +105,7 @@ export default function TestimonialsPage() {
                   src={video.url}
                   frameBorder="0"
                   allow="autoplay; fullscreen; picture-in-picture"
-                  allowFullScreen
+                  allowFullScreen={true}
                   title={video.name}
                 ></iframe>
                 
@@ -139,7 +139,7 @@ export default function TestimonialsPage() {
                   src={video.url}
                   frameBorder="0"
                   allow="autoplay; fullscreen; picture-in-picture"
-                  allowFullScreen
+                  allowFullScreen={true}
                   title={video.name}
                 ></iframe>
                 
@@ -195,7 +195,7 @@ export default function TestimonialsPage() {
               src={selectedVideo}
               frameBorder="0"
               allow="autoplay; fullscreen; picture-in-picture"
-              allowFullScreen
+              allowFullScreen={true}
               title="Testimonial Video"
             ></iframe>
           </div>

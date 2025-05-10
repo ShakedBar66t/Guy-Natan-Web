@@ -20,6 +20,7 @@ interface BlogPost {
   excerpt?: string;
   coverImage?: string;
   isPublished: boolean;
+  scheduledPublishDate?: string; // ISO string format for datetime-local input
   category?: string;
   level?: string;
   relatedTerms?: string[];
@@ -31,7 +32,7 @@ interface BlogEditorProps {
 }
 
 // Pre-defined categories and levels
-const CATEGORIES = ['שוק ההון', 'פיננסים', 'כלכלה', 'נדל"ן', 'ביטוח', 'משפט', 'כללי'];
+const CATEGORIES = ['פיננסים', 'השקעות', 'כלכלה', 'כלכלה אישית', 'כללי'];
 const LEVELS = ['מתחילים', 'בינוניים', 'מתקדמים'];
 
 export default function BlogEditor({ post, isEditing = false }: BlogEditorProps) {
@@ -48,6 +49,7 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
     excerpt: post?.excerpt || '',
     coverImage: post?.coverImage || '',
     isPublished: post?.isPublished || false,
+    scheduledPublishDate: post?.scheduledPublishDate ? new Date(post.scheduledPublishDate).toISOString().slice(0, 16) : '',
     category: post?.category || '',
     level: post?.level || '',
     relatedTerms: post?.relatedTerms || [],
@@ -108,16 +110,56 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
     }
   };
 
+  const isScheduledDateValid = () => {
+    if (!formData.scheduledPublishDate) return true;
+    
+    const scheduledDate = new Date(formData.scheduledPublishDate);
+    const now = new Date();
+    
+    return scheduledDate > now;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     setSuccess('');
     
+    if (formData.scheduledPublishDate && !isScheduledDateValid()) {
+      setError('זמן הפרסום המתוזמן חייב להיות בעתיד');
+      setLoading(false);
+      return;
+    }
+    
     try {
-      // Make sure to get the latest content from TinyMCE
       const content = editorRef.current ? editorRef.current.getContent() : formData.content;
-      const postData = { ...formData, content };
+      
+      // Generate slug automatically from title for both new and edited posts
+      const titleSlug = formData.title
+        .toLowerCase()
+        .replace(/[^\w\s-]/gi, '') // Remove special chars except hyphens
+        .replace(/\s+/g, '-')      // Replace spaces with dashes
+        .replace(/-+/g, '-')       // Replace multiple hyphens with a single one
+        .replace(/^-|-$/g, '');    // Trim leading/trailing hyphens
+
+      // For new posts, we'll let the server add timestamp to the slug
+      // For edited posts, we'll use the existing slug if available or generate a new one
+      const slug = isEditing && post?.slug ? post.slug : titleSlug;
+      
+      const postData = { 
+        ...formData, 
+        content,
+        slug 
+      };
+      
+      if (formData.scheduledPublishDate && !formData.isPublished) {
+        postData.isPublished = false;
+        
+        const scheduledDate = new Date(formData.scheduledPublishDate);
+        postData.scheduledPublishDate = scheduledDate.toISOString();
+      } else if (formData.isPublished) {
+        postData.scheduledPublishDate = '';
+      }
       
       const url = isEditing && post?._id 
         ? `/api/admin/blog/${post._id}` 
@@ -140,9 +182,12 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
       
       const data = await response.json();
       
-      setSuccess(isEditing ? 'המאמר עודכן בהצלחה!' : 'המאמר נוצר בהצלחה!');
+      const successMessage = isEditing ? 'המאמר עודכן בהצלחה!' : 'המאמר נוצר בהצלחה!';
+      const scheduledMessage = formData.scheduledPublishDate && !formData.isPublished ? 
+        ` הוא יפורסם אוטומטית ב-${new Date(formData.scheduledPublishDate).toLocaleString('he-IL')}` : '';
       
-      // Redirect after a short delay
+      setSuccess(successMessage + scheduledMessage);
+      
       setTimeout(() => {
         router.push('/admin/dashboard/blog');
       }, 1500);
@@ -152,17 +197,6 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleGenerateSlug = () => {
-    if (!formData.title) return;
-    
-    const slug = formData.title
-      .toLowerCase()
-      .replace(/[^\w\s]/gi, '')
-      .replace(/\s+/g, '-');
-    
-    setFormData((prev) => ({ ...prev, slug }));
   };
 
   return (
@@ -198,33 +232,9 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
         </div>
         
         <div className="flex flex-col md:flex-row md:space-x-4 md:space-x-reverse">
-          <div className="flex-1 mb-4 md:mb-0">
-            <label htmlFor="slug" className="block text-sm font-medium text-gray-700">
-              Slug
-            </label>
-            <div className="mt-1 flex rounded-md shadow-sm">
-              <input
-                type="text"
-                id="slug"
-                name="slug"
-                value={formData.slug}
-                onChange={handleChange}
-                className="block w-full flex-1 rounded-none rounded-r-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                required
-              />
-              <button
-                type="button"
-                onClick={handleGenerateSlug}
-                className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-              >
-                צור אוטומטית
-              </button>
-            </div>
-          </div>
-          
           <div className="flex-1">
             <label className="block text-sm font-medium text-gray-700">
-              סטטוס
+              סטטוס פרסום
             </label>
             <div className="mt-2">
               <label className="inline-flex items-center">
@@ -241,6 +251,28 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
           </div>
         </div>
         
+        {/* Scheduled publishing date picker */}
+        <div className={formData.isPublished ? "opacity-50 pointer-events-none" : ""}>
+          <label htmlFor="scheduledPublishDate" className="block text-sm font-medium text-gray-700">
+            תאריך ושעת פרסום מתוזמן
+          </label>
+          <div className="mt-1">
+            <input
+              type="datetime-local"
+              id="scheduledPublishDate"
+              name="scheduledPublishDate"
+              value={formData.scheduledPublishDate || ''}
+              onChange={handleChange}
+              min={new Date().toISOString().slice(0, 16)}
+              className="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              disabled={formData.isPublished}
+            />
+          </div>
+          <p className="mt-1 text-sm text-gray-500">
+            השאר ריק לשמירת טיוטה, או בחר תאריך ושעה לפרסום אוטומטי
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label htmlFor="category" className="block text-sm font-medium text-gray-700">
@@ -322,20 +354,6 @@ export default function BlogEditor({ post, isEditing = false }: BlogEditorProps)
             name="excerpt"
             rows={3}
             value={formData.excerpt}
-            onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-          />
-        </div>
-        
-        <div>
-          <label htmlFor="coverImage" className="block text-sm font-medium text-gray-700">
-            תמונת קאבר (URL)
-          </label>
-          <input
-            type="text"
-            id="coverImage"
-            name="coverImage"
-            value={formData.coverImage}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
           />

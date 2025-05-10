@@ -12,6 +12,7 @@ interface BlogPost {
   excerpt?: string;
   isPublished: boolean;
   publishedAt?: string;
+  scheduledPublishDate?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -100,6 +101,11 @@ export default function BlogManagement() {
     return format(new Date(dateString), 'dd/MM/yyyy');
   }
 
+  function formatDateTime(dateString: string) {
+    if (!dateString) return '';
+    return format(new Date(dateString), 'dd/MM/yyyy HH:mm');
+  }
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
@@ -112,14 +118,16 @@ export default function BlogManagement() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-xl font-bold">מאמרים</h2>
-        <Link
-          href="/admin/dashboard/blog/new"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-          prefetch={true}
-          replace={true}
-        >
-          מאמר חדש
-        </Link>
+        <div className="flex space-x-2 space-x-reverse">
+          <Link
+            href="/admin/dashboard/blog/new"
+            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            prefetch={true}
+            replace={true}
+          >
+            מאמר חדש
+          </Link>
+        </div>
       </div>
       
       {error && (
@@ -158,6 +166,9 @@ export default function BlogManagement() {
                   עודכן
                 </th>
                 <th scope="col" className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                  פרסום מתוזמן
+                </th>
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
                   פעולות
                 </th>
               </tr>
@@ -183,6 +194,11 @@ export default function BlogManagement() {
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                     {formatDate(post.updatedAt)}
+                  </td>
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                    {post.scheduledPublishDate && !post.isPublished 
+                      ? formatDateTime(post.scheduledPublishDate)
+                      : ''}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
                     <div className="flex space-x-2">

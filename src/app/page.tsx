@@ -13,7 +13,6 @@ export default function Home() {
       <TestimonialsSection />
       <KnowledgeSection />
       <FinancialUpdatesSection />
-      {/* <ContactCTA /> */}
     </main>
   )
 }

@@ -22,5 +22,11 @@
         }
       ]
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/admin/blog/publish-scheduled",
+      "schedule": "* * * * *"
+    }
   ]
 } 

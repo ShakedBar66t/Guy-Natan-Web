@@ -35,37 +35,54 @@ export async function POST(request: NextRequest) {
       data.relatedTerms = [];
     }
     
-    // Handle slug creation/validation - ensure it's never empty or just "-"
+    // Handle slug creation - always auto-generate based on title
     let slugToUse = '';
     
-    if (!data.slug || data.slug.trim() === '-' || data.slug.trim() === '') {
-      // If title is empty or only has special characters, use a timestamp
-      const titleForSlug = data.title && data.title.trim() ? data.title : `post-${Date.now()}`;
-      
-      slugToUse = titleForSlug
+    // Generate from title if available, otherwise use timestamp
+    if (data.title && data.title.trim()) {
+      slugToUse = data.title
         .toLowerCase()
         .replace(/[^\w\s-]/gi, '') // Remove special chars except hyphens
         .replace(/\s+/g, '-')      // Replace spaces with dashes
         .replace(/-+/g, '-')       // Replace multiple hyphens with a single one
         .replace(/^-|-$/g, '');    // Trim leading/trailing hyphens
-    } else {
-      slugToUse = data.slug.trim();
     }
     
-    // If slug is empty or just "-" after all replacements, use a timestamp
-    if (!slugToUse || slugToUse === '-' || slugToUse === '') {
-      slugToUse = `post-${Date.now()}`;
+    // If slug is empty after processing, use a generic name
+    if (!slugToUse || slugToUse === '-' || slugToUse.length < 3) {
+      slugToUse = `post`;
     }
     
     // Always add a timestamp to ensure uniqueness
-    data.slug = `${slugToUse}-${Date.now()}`;
+    const timestamp = Date.now();
+    data.slug = `${slugToUse}-${timestamp}`;
     
-    // Set published date if published
+    console.log(`Generated slug: ${data.slug} for title: "${data.title}"`);
+    
+    // Set published date if published immediately
     if (data.isPublished) {
       data.publishedAt = new Date();
+      // Clear scheduled date if published immediately
+      data.scheduledPublishDate = null;
+      console.log(`Post will be published immediately`);
+    } else if (data.scheduledPublishDate) {
+      // Ensure scheduledPublishDate is properly formatted
+      data.scheduledPublishDate = new Date(data.scheduledPublishDate);
+      console.log(`Post scheduled for: ${data.scheduledPublishDate.toISOString()}`);
+      
+      // Validate the date is in the future
+      const now = new Date();
+      if (data.scheduledPublishDate <= now) {
+        return NextResponse.json(
+          { success: false, message: 'Scheduled publish date must be in the future' },
+          { status: 400 }
+        );
+      }
     }
     
+    console.log(`Creating blog post with title: "${data.title}"`);
     const blogPost = await BlogPost.create(data);
+    console.log(`Blog post created with ID: ${blogPost._id}`);
     
     // Populate the related terms in the response
     const populatedBlogPost = await BlogPost.findById(blogPost._id)

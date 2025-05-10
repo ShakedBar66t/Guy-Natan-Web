@@ -5,14 +5,17 @@ export interface IBlogPost extends Document {
   content: string;
   slug: string;
   excerpt?: string;
+  preview?: string;
   coverImage?: string;
   isPublished: boolean;
   publishedAt?: Date;
+  scheduledPublishDate?: Date;
   createdAt: Date;
   updatedAt: Date;
   category?: string;
   level?: string;
   relatedTerms?: string[]; // Array of term IDs
+  author?: string;
 }
 
 const BlogPostSchema: Schema = new Schema(
@@ -26,13 +29,18 @@ const BlogPostSchema: Schema = new Schema(
       type: String,
       required: [true, 'Please provide content for this blog post.'],
     },
+    excerpt: {
+      type: String,
+      maxlength: [500, 'Excerpt cannot be more than 500 characters'],
+    },
+    preview: {
+      type: String,
+      maxlength: [500, 'Preview cannot be more than 500 characters'],
+    },
     slug: {
       type: String,
       required: [true, 'Please provide a slug for this blog post.'],
       unique: true,
-    },
-    excerpt: {
-      type: String,
     },
     coverImage: {
       type: String,
@@ -44,8 +52,14 @@ const BlogPostSchema: Schema = new Schema(
     publishedAt: {
       type: Date,
     },
+    scheduledPublishDate: {
+      type: Date,
+      default: null,
+    },
     category: {
       type: String,
+      enum: ['פיננסים', 'השקעות', 'כלכלה', 'כלכלה אישית', 'כללי'],
+      default: 'כללי',
     },
     level: {
       type: String,
@@ -54,6 +68,10 @@ const BlogPostSchema: Schema = new Schema(
       type: [{ type: Schema.Types.ObjectId, ref: 'FinancialTerm' }],
       default: [],
     },
+    author: {
+      type: String,
+      default: 'גיא נתן',
+    }
   },
   {
     timestamps: true,

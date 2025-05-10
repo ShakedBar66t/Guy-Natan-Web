@@ -32,13 +32,13 @@ export default function TradingViewTicker() {
 
     try {
       // Create a new script element manually
-      const script = document.createElement('script');
-      script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';
-      script.async = true;
-      script.type = 'text/javascript';
-      
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';
+    script.async = true;
+    script.type = 'text/javascript';
+    
       // Configure the widget
-      script.innerHTML = JSON.stringify({
+    script.innerHTML = JSON.stringify({
         "symbols": [
           {
             "description": "S&P 500",
@@ -64,13 +64,13 @@ export default function TradingViewTicker() {
             "description": "Tel Aviv 125",
             "proName": "TASE:TA125"
           }
-        ],
+      ],
         "showSymbolLogo": true,
         "colorTheme": "dark",
         "isTransparent": false,
         "displayMode": "adaptive",
         "locale": "en"
-      });
+    });
 
       // Only append if the container exists and we're still the active instance
       if (containerRef.current && document.getElementById(COMPONENT_ID) === containerRef.current) {
@@ -92,7 +92,7 @@ export default function TradingViewTicker() {
       }
     };
   }, [shouldRender]);
-
+      
   // Don't render anything if we shouldn't
   if (!shouldRender) {
     return null;

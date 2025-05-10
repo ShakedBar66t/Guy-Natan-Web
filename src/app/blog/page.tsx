@@ -40,6 +40,8 @@ function BlogContent() {
   const [activeTab, setActiveTab] = useState<'blog' | 'glossary'>(
     tabParam === 'glossary' ? 'glossary' : 'blog'
   );
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isFilterExpanded, setIsFilterExpanded] = useState(false);
 
   // Update the URL when tab changes
   const handleTabChange = (tab: 'blog' | 'glossary') => {
@@ -68,7 +70,7 @@ function BlogContent() {
           throw new Error('Failed to fetch blog posts');
         }
         const data = await response.json();
-        setBlogPosts(data);
+        setBlogPosts(data.posts || data); // Handle both new and old response format
       } catch (err) {
         logger.error('Error fetching blog posts:', err);
         setError('אירעה שגיאה בטעינת המאמרים. נסה שוב מאוחר יותר.');
@@ -84,10 +86,17 @@ function BlogContent() {
   const categories = Array.from(new Set(blogPosts.filter(post => post.category).map(post => post.category)));
   const levels = Array.from(new Set(blogPosts.filter(post => post.level).map(post => post.level)));
 
-  // Filter posts based on selection
+  // Filter posts based on selection and search query
   const filteredPosts = blogPosts.filter(post => {
+    // Filter by category
     if (selectedCategory && post.category !== selectedCategory) return false;
+    
+    // Filter by level
     if (selectedLevel && post.level !== selectedLevel) return false;
+    
+    // Filter by search query (case insensitive)
+    if (searchQuery && !post.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    
     return true;
   });
 
@@ -96,10 +105,14 @@ function BlogContent() {
     return format(new Date(dateString), 'dd/MM/yyyy', { locale: he });
   }
 
+  const toggleFilters = () => {
+    setIsFilterExpanded(!isFilterExpanded);
+  };
+
   return (
     <>
       {/* Tab switcher */}
-      <div className="flex justify-center mb-8">
+      <div className="flex justify-center mb-6">
         <div className="bg-gray-100 rounded-full p-1 inline-flex">
           <button
             onClick={() => handleTabChange('blog')}
@@ -130,19 +143,52 @@ function BlogContent() {
       {/* Blog Content - Only show when blog tab is active */}
       {activeTab === 'blog' && (
         <>
-          {/* Filters Section */}
-          {categories.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-              {/* Category Filter */}
-              <div className="bg-gray-100 rounded-lg p-8 text-right" dir="rtl">
-                <h2 className="text-3xl font-bold text-[#002F42] mb-6">
-                  מה בא לך <span className="text-[#32a191]">ללמוד?</span>
-                </h2>
-                <div className="mb-4">
-                  <h3 className="text-xl font-medium mb-4">קטגוריה</h3>
-                  <div className="space-y-3">
+          {/* Search and Filters */}
+          <div className="bg-gray-50 rounded-lg p-4 mb-6 text-right" dir="rtl">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
+              {/* Search input */}
+              <div className="relative w-full md:w-1/2">
+                <input
+                  type="text"
+                  placeholder="חיפוש לפי כותרת..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                />
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </div>
+              
+              {/* Filters toggle button */}
+              <button
+                onClick={toggleFilters}
+                className="flex items-center text-[#32a191] hover:text-[#002F42] transition-colors text-sm"
+              >
+                <span className="ml-1 font-medium">מה בא לך ללמוד?</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-5 w-5 transition-transform duration-200 ${isFilterExpanded ? 'rotate-180' : ''}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
+            
+            {/* Expandable filters */}
+            {isFilterExpanded && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 animate-fadeIn">
+                {/* Category Filter */}
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <h3 className="text-lg font-medium mb-2">קטגוריה</h3>
+                  <div className="flex flex-wrap gap-2">
                     <button 
-                      className={`block w-full text-right px-4 py-2 rounded-md ${selectedCategory === null ? 'bg-[#32a191] text-white' : 'bg-white hover:bg-gray-50'}`}
+                      className={`px-3 py-1 rounded-md text-sm ${selectedCategory === null ? 'bg-[#32a191] text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
                       onClick={() => setSelectedCategory(null)}
                     >
                       הכל
@@ -150,7 +196,7 @@ function BlogContent() {
                     {categories.map((category) => (
                       <button 
                         key={category}
-                        className={`block w-full text-right px-4 py-2 rounded-md ${selectedCategory === category ? 'bg-[#32a191] text-white' : 'bg-white hover:bg-gray-50'}`}
+                        className={`px-3 py-1 rounded-md text-sm ${selectedCategory === category ? 'bg-[#32a191] text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
                         onClick={() => setSelectedCategory(category as string)}
                       >
                         {category}
@@ -158,19 +204,14 @@ function BlogContent() {
                     ))}
                   </div>
                 </div>
-              </div>
 
-              {/* Level Filter */}
-              {levels.length > 0 && (
-                <div className="bg-gray-100 rounded-lg p-8 text-right" dir="rtl">
-                  <h2 className="text-3xl font-bold text-[#002F42] mb-6">
-                    מה הרמה <span className="text-[#32a191]">שלך?</span>
-                  </h2>
-                  <div className="mb-4">
-                    <h3 className="text-xl font-medium mb-4">רמה</h3>
-                    <div className="space-y-3">
+                {/* Level Filter - only show if there are levels */}
+                {levels.length > 0 && (
+                  <div className="bg-white rounded-lg p-4 shadow-sm">
+                    <h3 className="text-lg font-medium mb-2">רמה</h3>
+                    <div className="flex flex-wrap gap-2">
                       <button 
-                        className={`block w-full text-right px-4 py-2 rounded-md ${selectedLevel === null ? 'bg-[#32a191] text-white' : 'bg-white hover:bg-gray-50'}`}
+                        className={`px-3 py-1 rounded-md text-sm ${selectedLevel === null ? 'bg-[#32a191] text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
                         onClick={() => setSelectedLevel(null)}
                       >
                         הכל
@@ -178,7 +219,7 @@ function BlogContent() {
                       {levels.map((level) => (
                         <button 
                           key={level}
-                          className={`block w-full text-right px-4 py-2 rounded-md ${selectedLevel === level ? 'bg-[#32a191] text-white' : 'bg-white hover:bg-gray-50'}`}
+                          className={`px-3 py-1 rounded-md text-sm ${selectedLevel === level ? 'bg-[#32a191] text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
                           onClick={() => setSelectedLevel(level as string)}
                         >
                           {level}
@@ -186,31 +227,46 @@ function BlogContent() {
                       ))}
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Loading state */}
+          {loading && (
+            <div className="text-center py-12 mb-16">
+              <Loader text="טוען מאמרים..." />
             </div>
           )}
 
-          {/* Loading State */}
-          {loading && <Loader />}
-
-          {/* Error State */}
-          {error && (
-            <div className="bg-red-50 text-red-700 p-4 rounded-lg text-center mb-16">
-              {error}
+          {/* Error state */}
+          {!loading && error && (
+            <div className="text-center py-12 mb-16">
+              <div className="text-red-500 mb-4">{error}</div>
+              <button
+                onClick={() => window.location.reload()}
+                className="bg-[#32a191] text-white px-4 py-2 rounded-md"
+              >
+                נסה שוב
+              </button>
             </div>
           )}
 
-          {/* Empty State */}
+          {/* No results state */}
           {!loading && !error && filteredPosts.length === 0 && (
             <div className="text-center py-12 mb-16">
-              <div className="text-xl text-gray-600">לא נמצאו מאמרים בקטגוריה זו.</div>
+              <div className="text-xl text-gray-600 mb-4">
+                {searchQuery 
+                  ? `לא נמצאו מאמרים התואמים לחיפוש "${searchQuery}"`
+                  : 'לא נמצאו מאמרים בקטגוריה זו.'}
+              </div>
               <button 
                 onClick={() => {
                   setSelectedCategory(null);
                   setSelectedLevel(null);
+                  setSearchQuery('');
                 }}
-                className="mt-4 bg-[#32a191] text-white px-4 py-2 rounded-md"
+                className="bg-[#32a191] text-white px-4 py-2 rounded-md"
               >
                 הצג את כל המאמרים
               </button>
@@ -220,7 +276,7 @@ function BlogContent() {
           {/* Blog Posts Grid */}
           {!loading && filteredPosts.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-              {filteredPosts.map((post) => (
+              {filteredPosts.map(post => (
                 <div key={post._id} className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
                   {/* Post Image */}
                   {post.coverImage && (
@@ -264,6 +320,9 @@ function BlogContent() {
               ))}
             </div>
           )}
+          
+          {/* Contact Form */}
+          <ContactForm />
         </>
       )}
     </>

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate-blogs": "node scripts/migrate-blogs.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -41,7 +42,10 @@
     "@tiptap/starter-kit": "^2.11.7",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.9",
+    "@vimeo/player": "^2.27.1",
+    "axios": "^1.9.0",
     "bcryptjs": "^3.0.2",
+    "cheerio": "^1.0.0",
     "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",
     "jose": "^6.0.10",
@@ -57,11 +61,13 @@
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
+    "slugify": "^1.6.6",
     "swiper": "^11.2.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

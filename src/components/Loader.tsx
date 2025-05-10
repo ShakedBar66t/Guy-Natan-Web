@@ -24,21 +24,21 @@ export default function Loader({
     large: 'w-32 h-32',
   }[size];
 
-  // Spinner component for buttons and small contexts
+  // Spinner component for buttons and small contexts - now with pulse animation
   const spinner = (
     <div className={`${sizeClass} relative inline-block`}>
-      <div className="w-full h-full border-4 border-gray-200 border-t-[#32a191] rounded-full animate-spin"></div>
+      <div className="w-full h-full border-4 border-t-[#32a191] border-r-[#32a191] border-b-[#32a191] border-l-gray-200 rounded-full animate-pulse-zoom"></div>
     </div>
   );
   
-  // Logo component for larger contexts
+  // Logo component for larger contexts - now with pulse animation
   const logo = (
     <div className={`${sizeClass} relative`}>
       <img
         src="https://res.cloudinary.com/drld1bejg/image/upload/v1743255601/GuyNatanLogo-removebg-preview_atdnde.png"
         alt="Loading..."
-        className="w-full h-full object-contain animate-spin-slow"
-        style={{ animationDuration: '3s' }}
+        className="w-full h-full object-contain animate-pulse-zoom"
+        style={{ animationDuration: '1.5s' }}
       />
     </div>
   );

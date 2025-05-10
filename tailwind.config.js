@@ -9,6 +9,13 @@ module.exports = {
     extend: {
       animation: {
         'spin-slow': 'spin 3s linear infinite',
+        'pulse-zoom': 'pulseZoom 1.5s ease-in-out infinite',
+      },
+      keyframes: {
+        pulseZoom: {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.1)' },
+        },
       },
       typography: {
         DEFAULT: {

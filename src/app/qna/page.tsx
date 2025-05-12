@@ -33,11 +33,13 @@ const FAQItem = ({ question, answer }: { question: string; answer: string }) => 
         </div>
       </div>
       
-      {isOpen && (
-        <div className="mt-4 text-gray-600 text-right leading-relaxed pr-4"
+      <div 
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'}`}
+      >
+        <div className="text-gray-600 text-right leading-relaxed pr-4"
              dangerouslySetInnerHTML={{ __html: answer }}
         />
-      )}
+      </div>
     </div>
   );
 };
@@ -139,19 +141,19 @@ export default function QnAPage() {
       <MaxWidthWrapper>
         {/* Intro Section */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#002F42] mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-[#002F42] mb-6">
             השאלות שלכם <span className="text-[#32a191]">התשובות שלנו</span>
           </h2>
           <div className="max-w-2xl mx-auto">
-            <p className="text-xl font-bold text-[#002F42] mb-2">
+            <p className="text-2xl font-bold text-[#002F42] mb-4">
               כסף הוא תחום שתמיד מעורר שאלות
             </p>
-            <p className="text-gray-600 mb-4">
+            <p className="text-xl text-gray-600 mb-6">
               אלו הן השאלות שבדרך כלל שואלים אותנו…
               <br />
               לא מצאתם את התשובה שלכם? אנחנו מאוד אוהבים להסביר ולענות,
             </p>
-            <p className="text-xl font-bold text-[#002F42]">
+            <p className="text-2xl font-bold text-[#002F42]">
               שלחו לנו הודעה!
             </p>
           </div>

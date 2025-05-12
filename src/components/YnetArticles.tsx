@@ -103,7 +103,7 @@ export default function YnetArticles() {
             </div>
             
             <div className="p-8 flex flex-col h-[280px]">
-              <h2 className="text-xl font-bold mb-auto text-right leading-tight">
+              <h2 className="text-xl font-bold mb-auto text-center leading-tight">
                 {article.title}
               </h2>
               

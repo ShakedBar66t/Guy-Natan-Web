@@ -32,7 +32,7 @@ interface BlogEditorProps {
 }
 
 // Pre-defined categories and levels
-const CATEGORIES = ['פיננסים', 'השקעות', 'כלכלה', 'כלכלה אישית', 'כללי'];
+const CATEGORIES = ['פיננסים', 'שוק ההון'];
 const LEVELS = ['מתחילים', 'בינוניים', 'מתקדמים'];
 
 export default function BlogEditor({ post, isEditing = false }: BlogEditorProps) {

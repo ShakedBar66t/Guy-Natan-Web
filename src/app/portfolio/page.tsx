@@ -9,9 +9,9 @@ const DEFAULT_DOLLAR_RATE = 3.7;
 export default function PortfolioPage() {
   // State for form inputs
   const [dollarRate, setDollarRate] = useState<number | ''>(DEFAULT_DOLLAR_RATE);
-  const [portfolioPercentage, setPortfolioPercentage] = useState<number | ''>('');
-  const [portfolioValue, setPortfolioValue] = useState<number | ''>('');
-  const [stockPrice, setStockPrice] = useState<number | ''>('');
+  const [portfolioPercentage, setPortfolioPercentage] = useState<string>('');
+  const [portfolioValue, setPortfolioValue] = useState<string>('');
+  const [stockPrice, setStockPrice] = useState<string>('');
   const [isLoadingRate, setIsLoadingRate] = useState(false);
   const [currencyType, setCurrencyType] = useState<'ILS' | 'USD'>('ILS');
   
@@ -29,23 +29,38 @@ export default function PortfolioPage() {
       try {
         setIsLoadingRate(true);
         
-        // Try a public currency API that supports CORS
-        try {
-          const response = await fetch('https://api.exchangerate.host/latest?base=USD&symbols=ILS');
-          if (response.ok) {
-            const data = await response.json();
-            const rate = data.rates.ILS;
-            if (rate) {
-              setDollarRate(rate);
-              setIsLoadingRate(false);
-              return;
+        // Try multiple exchange rate APIs in case one fails
+        const apis = [
+          // Open Exchange Rates API (fallback)
+          'https://open.er-api.com/v6/latest/USD',
+          // Exchange Rate API
+          'https://api.exchangerate.host/latest?base=USD&symbols=ILS',
+          // Exchange Rate API v2
+          'https://api.exchangerate-api.com/v4/latest/USD'
+        ];
+        
+        for (const apiUrl of apis) {
+          try {
+            const response = await fetch(apiUrl);
+            if (response.ok) {
+              const data = await response.json();
+              // Different APIs have different response structures
+              const rate = data.rates?.ILS || data.rates?.ils;
+              
+              if (rate && typeof rate === 'number' && !isNaN(rate)) {
+                console.log(`Successfully fetched exchange rate: ${rate} from ${apiUrl}`);
+                setDollarRate(parseFloat(rate.toFixed(2)));
+                return;
+              }
             }
+          } catch (err) {
+            console.log(`API ${apiUrl} failed, trying next...`);
+            continue;
           }
-        } catch (error) {
-          console.log('Exchange rate API failed, using default value');
         }
         
-        // If API fails, use the default value
+        // If all APIs fail, use the default value
+        console.log('All exchange rate APIs failed, using default value');
         setDollarRate(DEFAULT_DOLLAR_RATE);
       } catch (error) {
         console.error('Exchange rate API failed:', error);
@@ -56,7 +71,82 @@ export default function PortfolioPage() {
     };
     
     fetchDollarRate();
+    
+    // Set up interval to refresh the rate every hour
+    const intervalId = setInterval(fetchDollarRate, 60 * 60 * 1000);
+    
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
+  
+  // Function to format numbers with commas for thousands
+  const formatNumber = (num: number | null | undefined): string => {
+    if (num === null || num === undefined) return '0';
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
+  // Function to format input value with commas
+  const formatInputValue = (value: string): string => {
+    // Remove any non-digit characters except for decimal point
+    const numericValue = value.replace(/[^\d.]/g, '');
+    
+    if (numericValue === '') return '';
+    
+    // Check if it has a decimal part
+    if (numericValue.includes('.')) {
+      const [intPart, decimalPart] = numericValue.split('.');
+      return intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '.' + decimalPart;
+    }
+    
+    // Format only the integer part
+    return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
+  // Function to parse value from formatted string
+  const parseFormattedValue = (value: string): number => {
+    // Remove commas and convert to number
+    return parseFloat(value.replace(/,/g, '')) || 0;
+  };
+
+  // Handle input change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    
+    // Allow only numbers and dots
+    const sanitizedValue = value.replace(/[^\d.]/g, '');
+    
+    switch (name) {
+      case 'portfolioPercentage':
+        setPortfolioPercentage(sanitizedValue);
+        break;
+      case 'portfolioValue':
+        setPortfolioValue(sanitizedValue);
+        break;
+      case 'stockPrice':
+        setStockPrice(sanitizedValue);
+        break;
+    }
+  };
+
+  // Handle blur event to format input value
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (value === '') return;
+    
+    const formattedValue = formatInputValue(value);
+    
+    switch (name) {
+      case 'portfolioPercentage':
+        setPortfolioPercentage(formattedValue);
+        break;
+      case 'portfolioValue':
+        setPortfolioValue(formattedValue);
+        break;
+      case 'stockPrice':
+        setStockPrice(formattedValue);
+        break;
+    }
+  };
   
   // Handle calculation
   const calculateStockAmount = () => {
@@ -67,22 +157,24 @@ export default function PortfolioPage() {
     }
 
     // Convert input values
-    const dollar = typeof dollarRate === 'string' ? parseFloat(dollarRate) : dollarRate;
-    const percentage = typeof portfolioPercentage === 'string' ? parseFloat(portfolioPercentage) : portfolioPercentage;
-    const portfolio = typeof portfolioValue === 'string' ? parseFloat(portfolioValue) : portfolioValue;
-    const stock = typeof stockPrice === 'string' ? parseFloat(stockPrice) : stockPrice;
+    const dollar = typeof dollarRate === 'number' ? dollarRate : DEFAULT_DOLLAR_RATE;
+    const percentage = parseFormattedValue(portfolioPercentage);
+    const portfolio = parseFormattedValue(portfolioValue);
+    const stock = parseFormattedValue(stockPrice);
     
     // Calculate the result (how many stocks to buy)
     let stocksToBuy;
     
     if (currencyType === 'ILS') {
-      // If portfolio is in ILS and stock price is in ILS
+      // If stock price is in ILS
       // Formula: (Portfolio Value in ILS * Percentage) / Stock Price in ILS
       stocksToBuy = (portfolio * (percentage / 100)) / stock;
     } else {
-      // If portfolio is in USD and stock price is in USD
+      // If stock price is in USD
+      // Portfolio value is always in ILS, so we need to convert it to USD first
+      const portfolioInUSD = portfolio / dollar;
       // Formula: (Portfolio Value in USD * Percentage) / Stock Price in USD
-      stocksToBuy = (portfolio * (percentage / 100)) / stock;
+      stocksToBuy = (portfolioInUSD * (percentage / 100)) / stock;
     }
     
     // Update state with result
@@ -110,7 +202,7 @@ export default function PortfolioPage() {
       <div className="bg-[#002F42] py-6 mb-8">
         <MaxWidthWrapper>
           <h1 className="text-white text-center text-5xl md:text-6xl font-bold mb-2">
-            פעימות <span className="font-semibold text-5xl">לתיקי השקעות</span>
+            פעימות <span className="font-semibold">לתיקי השקעות</span>
           </h1>
         </MaxWidthWrapper>
       </div>
@@ -128,11 +220,11 @@ export default function PortfolioPage() {
               e.preventDefault();
               calculateStockAmount();
             }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            className="grid grid-cols-1 gap-6"
             dir="rtl"
           >
             {/* Currency Toggle */}
-            <div className="md:col-span-2 flex justify-center mb-4">
+            <div className="flex justify-center mb-4">
               <div className="flex items-center bg-gray-100 rounded-lg p-2">
                 <button
                   type="button"
@@ -153,37 +245,42 @@ export default function PortfolioPage() {
             
             {/* Basic Inputs */}
             <div className="flex flex-col">
-              <label htmlFor="portfolioPercentage" className="mb-2 font-medium text-[#002F42]">
-                אחוז רצוי מהתיק (%):
+              <label htmlFor="portfolioValue" className="mb-2 font-medium text-[#002F42]">
+                שווי התיק (₪):
               </label>
               <input
-                id="portfolioPercentage"
-                type="number"
-                value={portfolioPercentage}
-                onChange={(e) => setPortfolioPercentage(e.target.value ? Number(e.target.value) : '')}
-                placeholder="5"
+                id="portfolioValue"
+                name="portfolioValue"
+                type="text"
+                value={portfolioValue}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="100000"
                 className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#32a191]"
                 dir="rtl"
-                min="0"
-                max="100"
-                step="0.1"
               />
             </div>
             
             <div className="flex flex-col">
-              <label htmlFor="portfolioValue" className="mb-2 font-medium text-[#002F42]">
-                שווי התיק {currencyType === 'ILS' ? '(₪)' : '($)'}:
+              <label htmlFor="portfolioPercentage" className="mb-2 font-medium text-[#002F42]">
+                אחוז רצוי מהתיק (%):
               </label>
-              <input
-                id="portfolioValue"
-                type="number"
-                value={portfolioValue}
-                onChange={(e) => setPortfolioValue(e.target.value ? Number(e.target.value) : '')}
-                placeholder={currencyType === 'ILS' ? "100000" : "30000"}
-                className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#32a191]"
-                dir="rtl"
-                min="0"
-              />
+              <div className="relative">
+                <input
+                  id="portfolioPercentage"
+                  name="portfolioPercentage"
+                  type="text"
+                  value={portfolioPercentage}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="5"
+                  className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                  dir="rtl"
+                />
+                {portfolioPercentage && (
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600">%</span>
+                )}
+              </div>
             </div>
             
             <div className="flex flex-col">
@@ -192,14 +289,14 @@ export default function PortfolioPage() {
               </label>
               <input
                 id="stockPrice"
-                type="number"
+                name="stockPrice"
+                type="text"
                 value={stockPrice}
-                onChange={(e) => setStockPrice(e.target.value ? Number(e.target.value) : '')}
+                onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder={currencyType === 'ILS' ? "50" : "150"}
                 className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#32a191]"
                 dir="rtl"
-                min="0"
-                step="0.01"
               />
             </div>
             
@@ -214,20 +311,13 @@ export default function PortfolioPage() {
                   )}
                 </div>
                 <div className="text-xs text-gray-500">
-                  שער זה משמש לחישוב פנימי בלבד ומתעדכן אוטומטית
+                  שער זה מתעדכן אוטומטית ומשמש לחישובים פנימיים בלבד
                 </div>
               </div>
             )}
             
-            {/* Empty div to maintain layout when in ILS mode */}
-            {currencyType === 'ILS' && (
-              <div className="flex flex-col">
-                {/* Empty spacer to maintain layout */}
-              </div>
-            )}
-            
             {/* Submit and Reset Buttons */}
-            <div className="md:col-span-2 flex justify-center gap-4 mt-4">
+            <div className="flex justify-center gap-4 mt-4">
               <button
                 type="submit"
                 className="bg-[#32a191] text-white py-3 px-8 rounded-lg text-xl font-medium hover:bg-[#002F42] transition-colors"
@@ -255,7 +345,7 @@ export default function PortfolioPage() {
             <div className="text-center" dir="rtl">
               <div className="mb-4">
                 <span className="text-gray-600 mb-1">כמות המניות שכדאי לרכוש:</span>
-                <div className="text-4xl font-bold text-[#32a191]">{result}</div>
+                <div className="text-4xl font-bold text-[#32a191]">{formatNumber(result)}</div>
               </div>
               
               <div className="bg-gray-50 p-4 rounded-lg max-w-md mx-auto">

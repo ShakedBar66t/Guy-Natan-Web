@@ -58,8 +58,8 @@ const BlogPostSchema: Schema = new Schema(
     },
     category: {
       type: String,
-      enum: ['פיננסים', 'השקעות', 'כלכלה', 'כלכלה אישית', 'כללי'],
-      default: 'כללי',
+      enum: ['פיננסים', 'שוק ההון'],
+      default: 'פיננסים',
     },
     level: {
       type: String,

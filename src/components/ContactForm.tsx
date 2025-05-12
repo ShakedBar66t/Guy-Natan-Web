@@ -104,7 +104,7 @@ export default function ContactForm({
   return (
     <div className={containerClass}>
       {title && (
-        <h2 className={`${tealBackground ? "text-center text-3xl sm:text-4xl md:text-5xl mb-6 sm:mb-10" : "text-3xl font-bold text-[#002F42] mb-4 text-center"}`}>
+        <h2 className={`${tealBackground ? "text-center text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-10" : "text-3xl font-bold text-[#002F42] mb-4 text-center"}`}>
           {title}
         </h2>
       )}

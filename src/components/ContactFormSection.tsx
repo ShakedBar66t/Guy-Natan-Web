@@ -7,7 +7,7 @@ export default function ContactFormSection() {
   return (
     <MaxWidthWrapper className="my-10 sm:my-16">
       <div className="w-full bg-[#50D3C5] py-10 sm:py-16 rounded-xl">
-        <h2 className="text-center text-3xl sm:text-4xl md:text-5xl mb-6 sm:mb-10">
+        <h2 className="text-center font-bold text-3xl sm:text-4xl md:text-5xl mb-6 sm:mb-10">
           לקבלת פרטים נוספים עבור תוכנית ההכשרה
         </h2>
         <div className="max-w-4xl mx-auto px-4">

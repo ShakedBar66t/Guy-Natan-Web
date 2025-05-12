@@ -1,15 +1,44 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 export default function Hero() {
   const videoRef = useRef<HTMLIFrameElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   // Function to scroll to the programs section
   const scrollToPrograms = () => {
     const programsSection = document.getElementById('programs');
     if (programsSection) {
       programsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Function to toggle play/pause
+  const togglePlayPause = () => {
+    if (!videoRef.current) return;
+    
+    if (isPlaying) {
+      // Pause video
+      videoRef.current.contentWindow?.postMessage(
+        JSON.stringify({
+          method: "pause",
+          value: ""
+        }),
+        "https://player.vimeo.com"
+      );
+      setIsPlaying(false);
+    } else {
+      // Play video
+      videoRef.current.contentWindow?.postMessage(
+        JSON.stringify({
+          method: "play",
+          value: ""
+        }),
+        "https://player.vimeo.com"
+      );
+      setIsPlaying(true);
     }
   };
 
@@ -32,6 +61,14 @@ export default function Hero() {
             }),
             "https://player.vimeo.com"
           );
+          setIsPlaying(true);
+        }
+        
+        // Update playing state based on player events
+        if (data.event === "play") {
+          setIsPlaying(true);
+        } else if (data.event === "pause") {
+          setIsPlaying(false);
         }
       } catch (e) {
         // Ignore parsing errors
@@ -67,13 +104,27 @@ export default function Hero() {
             <div className="relative pt-[56.25%]">
               <iframe
                 ref={videoRef}
-                src="https://player.vimeo.com/video/1060951547?h=42a836d1a9&api=1&background=0&autopause=0&loop=1&muted=0&title=0&byline=0&portrait=0"
+                src="https://player.vimeo.com/video/1060951547?h=42a836d1a9&api=1&background=1&autopause=0&loop=1&muted=0&title=0&byline=0&portrait=0&controls=0"
                 className="absolute top-0 left-0 w-full h-full"
                 frameBorder="0"
                 allow="autoplay; fullscreen; picture-in-picture"
-                allowFullScreen={true}
+                allowFullScreen={false}
                 title="גיא נתן סרטון"
               ></iframe>
+              {/* Clickable overlay to handle play/pause */}
+              <div 
+                ref={overlayRef}
+                onClick={togglePlayPause} 
+                className="absolute top-0 left-0 w-full h-full cursor-pointer z-10"
+              >
+                {!isPlaying && (
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="white" opacity="0.8">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           

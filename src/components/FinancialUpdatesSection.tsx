@@ -81,11 +81,15 @@ export default function FinancialUpdatesSection() {
                                         }
                                     </button>
 
-                                    {openItem === item.id && (
+                                    <div 
+                                        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                            openItem === item.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                                        }`}
+                                    >
                                         <div className="p-4 bg-gray-50 border-t-2 border-[#022E41]">
                                             <p className="text-lg text-right leading-relaxed">{item.answer}</p>
                                         </div>
-                                    )}
+                                    </div>
                                 </div>
                             ))}
                         </div>

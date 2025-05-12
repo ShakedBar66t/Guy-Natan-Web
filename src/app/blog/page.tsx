@@ -291,7 +291,7 @@ function BlogContent() {
                   
                   {/* Post Content */}
                   <div className="p-6 flex flex-col flex-grow text-right" dir="rtl">
-                    <h2 className="text-xl font-bold text-[#002F42] mb-4 min-h-[3rem] line-clamp-2 hover:text-[#32a191] transition-colors">
+                    <h2 className="text-xl font-bold text-[#002F42] mb-4 min-h-[3rem] hover:text-[#32a191] transition-colors">
                       <Link href={`/blog/${post.slug}`}>
                         {post.title}
                       </Link>

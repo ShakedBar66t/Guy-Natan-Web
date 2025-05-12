@@ -3,6 +3,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import SuppressHydrationWarnings from '@/components/SuppressHydrationWarnings';
+import { usePathname } from 'next/navigation';
 
 // Import all components dynamically with SSR disabled
 const ClientProviders = dynamic(() => import('@/components/ClientProviders'), { ssr: false });
@@ -16,6 +17,7 @@ const CustomInstagramFeed = dynamic(() => import('@/components/CustomInstagramFe
 export default function ClientLayout({ children }: { children: ReactNode }) {
   // Only render content after mounting on client
   const [isMounted, setIsMounted] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     // Set mounted state after a short delay to ensure client-side only rendering

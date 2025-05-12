@@ -79,16 +79,16 @@ export default function ProgramsSection() {
   return (
     <section id="programs">
       <div className="container mx-auto max-w-5xl px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">
+        <h2 className="text-5xl font-normal text-center mb-8 mt-16">
           אתם בוחרים את התוכנית<br />
-          <strong>שהכי מתאימה לכם</strong>
+          <span className="font-bold">שהכי מתאימה לכם</span>
           <div className="text-center mt-2 mb-12">👇🏻👇🏻👇🏻👇🏻👇🏻</div>
         </h2>
       </div>
 
       <MaxWidthWrapper className="mb-12">
         <div className="w-full bg-[#50D3C5] py-10 sm:py-16 rounded-xl">
-          <h1 className='text-center text-3xl sm:text-4xl md:text-5xl mb-6 sm:mb-10'>
+          <h1 className='text-center text-3xl sm:text-4xl md:text-5xl mb-6 sm:mb-10 font-bold'>
             לקבלת פרטים נוספים עבור תוכנית ההכשרה
           </h1>
           <div className='max-w-4xl mx-auto px-4'>
@@ -103,30 +103,30 @@ export default function ProgramsSection() {
         </div>
       </MaxWidthWrapper>
 
-      <div className="container mx-auto max-w-6xl">
+      <div className="container mx-auto max-w-6xl px-6 sm:px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {programs.map((program) => (
             <div 
               key={program.id} 
-              className="bg-white border-2 border-black hover:border-[#32a191] transition-colors duration-300 rounded-lg shadow-md p-6 flex flex-col h-[450px] relative"
+              className="bg-white border-2 border-black hover:border-[#32a191] transition-colors duration-300 rounded-lg shadow-md p-4 sm:p-6 flex flex-col h-[350px] sm:h-[450px] relative mx-auto w-full max-w-[320px] md:max-w-none"
               onMouseEnter={() => setHoveredCard(program.id)}
               onMouseLeave={() => setHoveredCard(null)}
             >
               {isMounted && program.icon && (
                 <div className="mb-2">
                   {React.createElement(program.icon, {
-                    size: 36,
+                    size: 30,
                     className: `text-[#32a191] transition-transform duration-300 ${
                       hoveredCard === program.id ? 'scale-125' : ''
                     }`
                   })}
                 </div>
               )}
-              <h3 className="text-3xl font-[500] mb-4">{program.title}</h3>
+              <h3 className="text-2xl sm:text-3xl font-[500] mb-2 sm:mb-4">{program.title}</h3>
               <div className="flex-grow overflow-y-auto">
-                <p className="text-xl font-[400]">{program.description}</p>
+                <p className="text-lg sm:text-xl font-[400]">{program.description}</p>
               </div>
-              <div className="mt-6">
+              <div className="mt-4 sm:mt-6">
                 <Link 
                   href={program.href}
                   className="flex items-center justify-center text-[#32a191] font-[700] group"

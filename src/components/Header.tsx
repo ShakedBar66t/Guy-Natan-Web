@@ -81,22 +81,18 @@ export default function Header() {
                   <AdminButton />
                 </div>
                 
-                {/* Regular non-dropdown links for desktop */}
-                {navLinks.filter(link => !link.isDropdownItem).map((link) => (
+                {/* Home link */}
+                {navLinks.filter(link => link.href === "/").map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`hover:underline underline-offset-[10px] ${pathname === link.href ? "underline" : ""} ${
-                      link.href === "/contact"
-                        ? "bg-[#022E41] text-white px-5 py-2 border border-2 rounded-xl hover:no-underline hover:bg-white hover:text-[#022E41] hover:border-[#022E41] no-underline"
-                        : ""
-                    }`}
+                    className={`hover:underline underline-offset-[10px] ${pathname === link.href ? "underline" : ""}`}
                   >
                     {link.label}
                   </Link>
                 ))}
                 
-                {/* Dropdown menu for desktop */}
+                {/* Dropdown menu for desktop - now placed right after Home */}
                 <div
                   className="relative"
                   onMouseEnter={() => setIsDropdownOpen(true)}
@@ -135,6 +131,21 @@ export default function Header() {
                     </div>
                   )}
                 </div>
+                
+                {/* Other non-dropdown links for desktop */}
+                {navLinks.filter(link => !link.isDropdownItem && link.href !== "/").map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`hover:underline underline-offset-[10px] ${pathname === link.href ? "underline" : ""} ${
+                      link.href === "/contact"
+                        ? "bg-[#022E41] text-white px-5 py-2 border border-2 rounded-xl hover:no-underline hover:bg-white hover:text-[#022E41] hover:border-[#022E41] no-underline"
+                        : ""
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </nav>
             </div>
           </div>

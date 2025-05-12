@@ -50,7 +50,7 @@ export default function Hero() {
   return (
     <section className="py-6 lg:py-20 bg-[#022E41]">
       <div className="container mx-auto px-4">
-        <h2 className="text-[32px] md:text-[47px] font-normal text-center text-white ">
+        <h2 className="text-[32px] md:text-5xl font-normal text-center text-white ">
           גן עדן פיננסי
         </h2>
         <p className="mt-4 text-center text-[18px] md:text-[26px] text-white">
@@ -79,14 +79,14 @@ export default function Hero() {
           
           {/* Buttons - below video on mobile, above on desktop */}
           <div className="flex flex-col md:flex-row justify-center my-6 md:my-10 gap-4 md:gap-10">
-            <Link href="/blog" className="md:flex-[0.5] w-full">
-              <button className="w-full bg-[#022E41] border border-white rounded-md text-white p-3 md:p-5 text-lg md:text-xl hover:bg-white hover:text-[#022E41]">
+            <Link href="/blog" className="md:w-[180px] w-full">
+              <button className="w-full bg-[#022E41] border border-white rounded-md text-white p-2 md:p-3 text-base md:text-lg hover:bg-white hover:text-[#022E41]">
                 בואו נתחיל ללמוד
               </button>
             </Link>
             <button 
               onClick={scrollToPrograms}
-              className="w-full md:flex-[0.5] bg-white text-[#022E41] p-3 md:p-5 border border-[#022E41] rounded-md text-lg md:text-xl hover:bg-[#022E41] hover:text-white hover:border-white"
+              className="w-full md:w-[180px] bg-white text-[#022E41] p-2 md:p-3 border border-[#022E41] rounded-md text-base md:text-lg hover:bg-[#022E41] hover:text-white hover:border-white"
             >
               המסלולים שלנו
             </button>

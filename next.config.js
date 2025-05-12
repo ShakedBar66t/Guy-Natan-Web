@@ -25,16 +25,6 @@ const nextConfig = {
         source: '/faq',
         destination: '/qna',
         permanent: false,
-      },
-      {
-        source: '/terms',
-        destination: '/',
-        permanent: false,
-      },
-      {
-        source: '/accessibility',
-        destination: '/',
-        permanent: false,
       }
     ];
   },

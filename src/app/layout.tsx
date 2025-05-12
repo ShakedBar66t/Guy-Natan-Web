@@ -3,6 +3,7 @@ import "@/app/globals.css";
 import ClientLayout from "./client-layout";
 import { Assistant } from "next/font/google";
 import TradingViewTicker from "@/components/TradingViewTicker";
+import Script from 'next/script';
 
 const assistant = Assistant({
   subsets: ["latin", "hebrew"],
@@ -48,8 +49,26 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="he" dir="rtl" className={assistant.className}>
+      <head>
+        <link rel="shortcut icon" href="/favicon.ico" />
+      </head>
       <body suppressHydrationWarning className={assistant.className}>
-          <TradingViewTicker />
+        <Script
+          id="userway-accessibility"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(d) {
+                var s = d.createElement("script");
+                s.setAttribute("data-account", "ewuuswlUNt");
+                s.setAttribute("src", "https://cdn.userway.org/widget.js");
+                s.setAttribute("data-common", "guy-natan");
+                (d.body || d.head).appendChild(s);
+              })(document)
+            `
+          }}
+        />
+        <TradingViewTicker />
         <ClientLayout>
               {children}
         </ClientLayout>

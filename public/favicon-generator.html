@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Favicon Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .preview {
+      width: 64px;
+      height: 64px;
+      border: 1px solid #ccc;
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 15px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Guy Natan Favicon Generator</h1>
+  
+  <div>
+    <h2>Preview:</h2>
+    <img id="preview" class="preview" src="https://res.cloudinary.com/drld1bejg/image/upload/v1743255601/GuyNatanLogo-removebg-preview_atdnde.png">
+  </div>
+  
+  <button id="generate">Generate and Download Favicon</button>
+  
+  <script>
+    document.getElementById('generate').addEventListener('click', function() {
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.src = "https://res.cloudinary.com/drld1bejg/image/upload/v1743255601/GuyNatanLogo-removebg-preview_atdnde.png";
+      
+      img.onload = function() {
+        // Create canvas
+        const canvas = document.createElement('canvas');
+        canvas.width = 32;
+        canvas.height = 32;
+        const ctx = canvas.getContext('2d');
+        
+        // Draw image to canvas
+        ctx.drawImage(img, 0, 0, 32, 32);
+        
+        // Create link and download
+        const link = document.createElement('a');
+        link.download = 'favicon.ico';
+        link.href = canvas.toDataURL('image/x-icon');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+    });
+  </script>
+</body>
+</html> 

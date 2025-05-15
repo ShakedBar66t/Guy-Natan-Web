@@ -14,8 +14,12 @@ export const metadata = {
   title: "גיא נתן | ייעוץ פיננסי וליווי כלכלי",
   description: "האתר הרשמי של גיא נתן - ייעוץ וליווי פיננסי, עדכונים מעולם ההשקעות, מאמרים וידע כלכלי שיעזור לך לקבל החלטות פיננסיות חכמות יותר.",
   icons: {
-    icon: 'https://res.cloudinary.com/drld1bejg/image/upload/v1743255601/GuyNatanLogo-removebg-preview_atdnde.png',
-    apple: 'https://res.cloudinary.com/drld1bejg/image/upload/v1743255601/GuyNatanLogo-removebg-preview_atdnde.png',
+    icon: [
+      { url: '/icon.png', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' }
+    ],
+    shortcut: '/icon.png',
+    apple: '/icon.png',
   },
   metadataBase: new URL('https://guy-natan.vercel.app'),
   openGraph: {
@@ -27,7 +31,7 @@ export const metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://res.cloudinary.com/drld1bejg/image/upload/v1743255601/GuyNatanLogo-removebg-preview_atdnde.png',
+        url: '/icon.png',
         width: 800,
         height: 600,
         alt: 'גיא נתן לוגו',
@@ -38,7 +42,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'גיא נתן | ייעוץ פיננסי וליווי כלכלי',
     description: 'האתר הרשמי של גיא נתן - ייעוץ וליווי פיננסי, עדכונים מעולם ההשקעות, מאמרים וידע כלכלי.',
-    images: ['https://res.cloudinary.com/drld1bejg/image/upload/v1743255601/GuyNatanLogo-removebg-preview_atdnde.png'],
+    images: ['/icon.png'],
   },
   robots: {
     index: true,
@@ -49,9 +53,6 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="he" dir="rtl" className={assistant.className}>
-      <head>
-        <link rel="shortcut icon" href="/favicon.ico" />
-      </head>
       <body suppressHydrationWarning className={assistant.className}>
         <Script
           id="userway-accessibility"

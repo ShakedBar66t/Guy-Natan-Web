@@ -231,30 +231,30 @@ export default function CalculatorPage() {
   return (
     <>
       {/* Header Banner */}
-      <div className="bg-[#002F42] py-6 mb-8">
+      <div className="bg-white py-6 mb-8">
         <MaxWidthWrapper>
-          <h1 className="text-white text-center text-5xl md:text-6xl font-bold mb-2">
-            חישוב ריבית <span className="font-semibold">דריבית</span>
+          <h1 className="text-[#002F42] text-center text-5xl md:text-6xl font-bold mb-2">
+            חישוב <span className="font-normal">ריבית דריבית</span>
           </h1>
-          <p className="text-white text-center text-lg max-w-3xl mx-auto opacity-90 mt-2">
+          <p className="text-[#002F42] text-center text-lg max-w-3xl mx-auto opacity-90 mt-2">
             אלברט איינשטיין אמר: "ריבית דריבית היא הפלא השמיני בתבל. מי שמבין זאת, מרוויח. מי שלא – משלם."
           </p>
         </MaxWidthWrapper>
       </div>
 
       <MaxWidthWrapper className="mb-16">
-        <div className="bg-white rounded-xl shadow-md p-6 md:p-8 mb-10">
+        <div className="bg-white rounded-xl shadow-md p-6 md:p-8 mb-10 max-w-2xl mx-auto">
           <form 
             onSubmit={(e) => {
               e.preventDefault();
               calculateCompoundInterest();
             }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            className="grid grid-cols-1 gap-6 items-center justify-items-center"
             dir="rtl"
           >
             {/* Basic Inputs */}
-            <div className="flex flex-col">
-              <label htmlFor="initialAmount" className="mb-2 font-medium text-[#002F42]">
+            <div className="flex flex-col items-center w-full">
+              <label htmlFor="initialAmount" className="mb-2 font-medium text-[#002F42] text-center">
                 סכום הפקדה ראשוני:
               </label>
               <input
@@ -264,15 +264,15 @@ export default function CalculatorPage() {
                 value={initialAmount}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#32a191] w-48 text-center"
                 dir="rtl"
                 placeholder="הזן סכום ראשוני"
               />
-              <p className="text-gray-500 text-sm mt-1">הסכום הראשוני שיופקד</p>
+              <p className="text-gray-500 text-sm mt-1 text-center">הסכום הראשוני שיופקד</p>
             </div>
 
-            <div className="flex flex-col">
-              <label htmlFor="monthlyDeposit" className="mb-2 font-medium text-[#002F42]">
+            <div className="flex flex-col items-center w-full">
+              <label htmlFor="monthlyDeposit" className="mb-2 font-medium text-[#002F42] text-center">
                 סכום הפקדה חודשי:
               </label>
               <input
@@ -282,18 +282,18 @@ export default function CalculatorPage() {
                 value={monthlyDeposit}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#32a191] w-48 text-center"
                 dir="rtl"
                 placeholder="הזן סכום חודשי"
               />
-              <p className="text-gray-500 text-sm mt-1">הסכום שיופקד בכל חודש</p>
+              <p className="text-gray-500 text-sm mt-1 text-center">הסכום שיופקד בכל חודש</p>
             </div>
 
-            <div className="flex flex-col">
-              <label htmlFor="interestRate" className="mb-2 font-medium text-[#002F42]">
+            <div className="flex flex-col items-center w-full">
+              <label htmlFor="interestRate" className="mb-2 font-medium text-[#002F42] text-center">
                 ריבית שנתית (באחוזים):
               </label>
-              <div className="relative">
+              <div className="relative w-48">
                 <input
                   id="interestRate"
                   name="annualInterestRate"
@@ -301,7 +301,7 @@ export default function CalculatorPage() {
                   value={annualInterestRate}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                  className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-[#32a191] text-center pr-8"
                   dir="rtl"
                   placeholder="הזן אחוז ריבית"
                 />
@@ -309,11 +309,11 @@ export default function CalculatorPage() {
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600">%</span>
                 )}
               </div>
-              <p className="text-gray-500 text-sm mt-1">הריבית שתתווסף לסכום בכל שנה (באחוזים)</p>
+              <p className="text-gray-500 text-sm mt-1 text-center">הריבית שתתווסף לסכום בכל שנה</p>
             </div>
 
-            <div className="flex flex-col">
-              <label htmlFor="years" className="mb-2 font-medium text-[#002F42]">
+            <div className="flex flex-col items-center w-full">
+              <label htmlFor="years" className="mb-2 font-medium text-[#002F42] text-center">
                 מספר שנות הפקדה:
               </label>
               <input
@@ -323,37 +323,35 @@ export default function CalculatorPage() {
                 value={years}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#32a191] w-48 text-center"
                 dir="rtl"
                 placeholder="הזן מספר שנים"
               />
-              <p className="text-gray-500 text-sm mt-1">מספר השנים שבהן יתבצעו הפקדות חודשיות</p>
+              <p className="text-gray-500 text-sm mt-1 text-center">מספר השנים שבהן יתבצעו הפקדות</p>
             </div>
 
             {/* Management Fees Toggle */}
-            <div className="md:col-span-2 mt-2 flex justify-start">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="managementFees"
-                  checked={includeManagementFees}
-                  onChange={(e) => setIncludeManagementFees(e.target.checked)}
-                  className="w-4 h-4 text-[#32a191] focus:ring-[#32a191]"
-                />
-                <label htmlFor="managementFees" className="mr-2 font-medium text-[#002F42]">
-                  הוסף דמי ניהול
-                </label>
-              </div>
+            <div className="flex items-center justify-center w-full mt-2">
+              <input
+                type="checkbox"
+                id="managementFees"
+                checked={includeManagementFees}
+                onChange={(e) => setIncludeManagementFees(e.target.checked)}
+                className="w-4 h-4 text-[#32a191] focus:ring-[#32a191]"
+              />
+              <label htmlFor="managementFees" className="mr-2 font-medium text-[#002F42]">
+                הוסף דמי ניהול
+              </label>
             </div>
 
             {/* Management Fees Inputs (Conditional) */}
             {includeManagementFees && (
               <>
-                <div className="flex flex-col">
-                  <label htmlFor="depositFee" className="mb-2 font-medium text-[#002F42]">
+                <div className="flex flex-col items-center w-full">
+                  <label htmlFor="depositFee" className="mb-2 font-medium text-[#002F42] text-center">
                     דמי ניהול מהפקדה (באחוזים):
                   </label>
-                  <div className="relative">
+                  <div className="relative w-48">
                     <input
                       id="depositFee"
                       name="depositFeeRate"
@@ -361,22 +359,22 @@ export default function CalculatorPage() {
                       value={depositFeeRate}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                      className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-[#32a191] text-center pr-8"
                       dir="rtl"
-                      placeholder="הזן אחוז דמי ניהול מהפקדה"
+                      placeholder="הזן אחוז דמי ניהול"
                     />
                     {depositFeeRate && (
                       <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600">%</span>
                     )}
                   </div>
-                  <p className="text-gray-500 text-sm mt-1">אחוז דמי הניהול שירדו מכל הפקדה</p>
+                  <p className="text-gray-500 text-sm mt-1 text-center">אחוז דמי הניהול מהפקדה</p>
                 </div>
 
-                <div className="flex flex-col">
-                  <label htmlFor="accumulationFee" className="mb-2 font-medium text-[#002F42]">
+                <div className="flex flex-col items-center w-full">
+                  <label htmlFor="accumulationFee" className="mb-2 font-medium text-[#002F42] text-center">
                     דמי ניהול מהצבירה (באחוזים):
                   </label>
-                  <div className="relative">
+                  <div className="relative w-48">
                     <input
                       id="accumulationFee"
                       name="accumulationFeeRate"
@@ -384,81 +382,81 @@ export default function CalculatorPage() {
                       value={accumulationFeeRate}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                      className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-[#32a191] text-center pr-8"
                       dir="rtl"
-                      placeholder="הזן אחוז דמי ניהול מהצבירה"
+                      placeholder="הזן אחוז דמי ניהול"
                     />
                     {accumulationFeeRate && (
                       <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600">%</span>
                     )}
                   </div>
-                  <p className="text-gray-500 text-sm mt-1">אחוז דמי הניהול שירדו בכל שנה מהסכום שנצבר</p>
+                  <p className="text-gray-500 text-sm mt-1 text-center">אחוז דמי הניהול מהצבירה</p>
                 </div>
               </>
             )}
 
             {/* Submit & Reset Buttons */}
-            <div className="md:col-span-2 flex justify-center gap-4 mt-4">
+            <div className="flex justify-center gap-4 mt-4">
               <button
                 type="submit"
-                className="bg-[#32a191] text-white py-3 px-8 rounded-lg text-xl font-medium hover:bg-[#002F42] transition-colors"
+                className="bg-[#32a191] text-white py-3 px-6 rounded-lg text-xl font-medium hover:bg-[#002F42] transition-colors w-24"
               >
                 חשב
               </button>
               <button
                 type="button"
                 onClick={resetForm}
-                className="bg-gray-200 text-gray-800 py-3 px-8 rounded-lg text-xl font-medium hover:bg-gray-300 transition-colors"
+                className="bg-gray-200 text-gray-800 py-3 px-6 rounded-lg text-xl font-medium hover:bg-gray-300 transition-colors w-24"
               >
                 איפוס
               </button>
             </div>
           </form>
         </div>
-
+        
         {/* Results Section */}
         {futureValue !== null && (
-          <div className="bg-white rounded-xl shadow-md p-6 md:p-8 mb-10">
+          <div className="bg-white rounded-xl shadow-md p-6 md:p-8 mb-10 max-w-2xl mx-auto">
             <h2 className="text-2xl font-bold text-[#002F42] mb-6 text-center" dir="rtl">
               תוצאות:
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" dir="rtl">
-              <div className="flex flex-col bg-gray-50 p-4 rounded-lg">
-                <span className="text-gray-600 mb-1">סכום ההפקדה הכולל:</span>
-                <span className="text-2xl font-bold text-[#002F42]">{formatNumber(totalDeposit)} ₪</span>
+              <div className="flex flex-col bg-gray-50 p-4 rounded-lg items-center">
+                <span className="text-gray-600 mb-1 text-center">סכום ההפקדה הכולל:</span>
+                <span className="text-2xl font-bold text-[#002F42] text-center">{formatNumber(totalDeposit)} ₪</span>
               </div>
               
-              <div className="flex flex-col bg-gray-50 p-4 rounded-lg">
-                <span className="text-gray-600 mb-1">רווח מהריבית דריבית:</span>
-                <span className="text-2xl font-bold text-green-600">{formatNumber(interestProfit)} ₪</span>
+              <div className="flex flex-col bg-gray-50 p-4 rounded-lg items-center">
+                <span className="text-gray-600 mb-1 text-center">רווח מהריבית דריבית:</span>
+                <span className="text-2xl font-bold text-green-600 text-center">{formatNumber(interestProfit)} ₪</span>
               </div>
               
-              <div className="flex flex-col bg-gray-50 p-4 rounded-lg">
-                <span className="text-gray-600 mb-1">סכום החיסכון העתידי:</span>
-                <span className="text-2xl font-bold text-[#32a191]">{formatNumber(futureValue)} ₪</span>
+              <div className="flex flex-col bg-gray-50 p-4 rounded-lg items-center">
+                <span className="text-gray-600 mb-1 text-center">סכום החיסכון העתידי:</span>
+                <span className="text-2xl font-bold text-[#32a191] text-center">{formatNumber(futureValue)} ₪</span>
               </div>
               
               {includeManagementFees && (
                 <>
-                  <div className="flex flex-col bg-gray-50 p-4 rounded-lg">
-                    <span className="text-gray-600 mb-1">דמי ניהול מהפקדה:</span>
-                    <span className="text-2xl font-bold text-red-500">{formatNumber(depositFees)} ₪</span>
+                  <div className="flex flex-col bg-gray-50 p-4 rounded-lg items-center">
+                    <span className="text-gray-600 mb-1 text-center">דמי ניהול מהפקדה:</span>
+                    <span className="text-2xl font-bold text-red-500 text-center">{formatNumber(depositFees)} ₪</span>
                   </div>
                   
-                  <div className="flex flex-col bg-gray-50 p-4 rounded-lg">
-                    <span className="text-gray-600 mb-1">דמי ניהול מצבירה:</span>
-                    <span className="text-2xl font-bold text-red-500">{formatNumber(accumulationFees)} ₪</span>
+                  <div className="flex flex-col bg-gray-50 p-4 rounded-lg items-center">
+                    <span className="text-gray-600 mb-1 text-center">דמי ניהול מצבירה:</span>
+                    <span className="text-2xl font-bold text-red-500 text-center">{formatNumber(accumulationFees)} ₪</span>
                   </div>
                   
-                  <div className="flex flex-col bg-gray-50 p-4 rounded-lg">
-                    <span className="text-gray-600 mb-1">אובדן רווח עקב גביית דמי ניהול:</span>
-                    <span className="text-2xl font-bold text-orange-500">{formatNumber(lostProfitDueToFees)} ₪</span>
+                  <div className="flex flex-col bg-gray-50 p-4 rounded-lg items-center">
+                    <span className="text-gray-600 mb-1 text-center">אובדן רווח עקב גביית דמי ניהול:</span>
+                    <span className="text-2xl font-bold text-orange-500 text-center">{formatNumber(lostProfitDueToFees)} ₪</span>
                   </div>
                   
-                  <div className="flex flex-col bg-gray-50 p-4 rounded-lg md:col-span-2 lg:col-span-3">
-                    <span className="text-gray-600 mb-1">סכום חיסכון עתידי ללא דמי ניהול:</span>
-                    <span className="text-2xl font-bold text-blue-600">{formatNumber(futureValueWithoutFees)} ₪</span>
+                  <div className="flex flex-col bg-gray-50 p-4 rounded-lg md:col-span-2 lg:col-span-3 items-center">
+                    <span className="text-gray-600 mb-1 text-center">סכום חיסכון עתידי ללא דמי ניהול:</span>
+                    <span className="text-2xl font-bold text-blue-600 text-center">{formatNumber(futureValueWithoutFees)} ₪</span>
                   </div>
                 </>
               )}
@@ -466,26 +464,26 @@ export default function CalculatorPage() {
             
             {/* Yearly Results Table */}
             <div className="mt-10" dir="rtl">
-              <h3 className="text-xl font-bold text-[#002F42] mb-4">טבלת חישוב שנתית:</h3>
+              <h3 className="text-xl font-bold text-[#002F42] mb-4 text-center">טבלת חישוב שנתית:</h3>
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="bg-gray-100">
-                      <th className="border p-2 text-right">שנה</th>
-                      <th className="border p-2 text-right">הכסף המושקע</th>
-                      <th className="border p-2 text-right">ערך עתידי</th>
-                      <th className="border p-2 text-right">סכום רווח</th>
-                      <th className="border p-2 text-right">אחוז רווח</th>
+                      <th className="border p-2 text-center">שנה</th>
+                      <th className="border p-2 text-center">הכסף המושקע</th>
+                      <th className="border p-2 text-center">ערך עתידי</th>
+                      <th className="border p-2 text-center">סכום רווח</th>
+                      <th className="border p-2 text-center">אחוז רווח</th>
                     </tr>
                   </thead>
                   <tbody>
                     {yearlyResults.map((row) => (
                       <tr key={row.year} className="hover:bg-gray-50">
-                        <td className="border p-2">{row.year}</td>
-                        <td className="border p-2">{formatNumber(row.totalDeposit)} ₪</td>
-                        <td className="border p-2">{formatNumber(row.balance)} ₪</td>
-                        <td className="border p-2">{formatNumber(row.profit)} ₪</td>
-                        <td className="border p-2">{row.profitPercent}%</td>
+                        <td className="border p-2 text-center">{row.year}</td>
+                        <td className="border p-2 text-center">{formatNumber(row.totalDeposit)} ₪</td>
+                        <td className="border p-2 text-center">{formatNumber(row.balance)} ₪</td>
+                        <td className="border p-2 text-center">{formatNumber(row.profit)} ₪</td>
+                        <td className="border p-2 text-center">{row.profitPercent}%</td>
                       </tr>
                     ))}
                   </tbody>
@@ -496,7 +494,7 @@ export default function CalculatorPage() {
         )}
         
         {/* Explanation Section */}
-        <div className="bg-white rounded-xl shadow-md p-6 md:p-8" dir="rtl">
+        <div className="bg-white rounded-xl shadow-md p-6 md:p-8 max-w-2xl mx-auto text-center" dir="rtl">
           <h2 className="text-2xl font-bold text-[#002F42] mb-4">מהי ריבית דריבית?</h2>
           <p className="text-gray-700 mb-4">
             ריבית דריבית היא תהליך שבו הריבית מתווספת לקרן, ולאחר מכן הריבית המצטברת מחושבת על הסכום החדש.

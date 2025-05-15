@@ -5,10 +5,10 @@ import MaxWidthWrapper from '@/components/MaxWidthWrapper';
 export default function TermsPage() {
   return (
     <>
-      <div className="bg-[#002F42] py-6 mb-16">
+      <div className="bg-white py-6 mb-16">
         <MaxWidthWrapper>
-          <h1 className="text-white text-center text-5xl md:text-6xl font-bold mb-2">
-            תקנון <span className="font-normal">ותנאי שימוש</span>
+          <h1 className="text-[#002F42] text-center text-5xl md:text-6xl font-bold mb-2">
+            תנאי <span className="font-normal">שימוש</span>
           </h1>
         </MaxWidthWrapper>
       </div>

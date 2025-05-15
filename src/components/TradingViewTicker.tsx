@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
 const COMPONENT_ID = 'trading-view-ticker-instance';
@@ -9,15 +9,6 @@ const STYLE_ID = 'trading-view-ticker-style';
 export default function TradingViewTicker() {
   const containerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-
-  // Track mobile vs desktop
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -50,9 +41,35 @@ export default function TradingViewTicker() {
       }
       .tv-ticker-tape-container { white-space: nowrap !important; }
       .tv-ticker-tape-widget__body { display: flex !important; align-items: center !important; }
-      .tv-ticker-tape-widget__logo-link { display: ${isMobile ? 'none' : 'block'} !important; }
+      .tv-ticker-tape-widget__logo-link { display: flex !important; align-items: center !important; height: 36px !important; }
+      .tv-ticker-tape-symbol__description { display: none !important; }
       .tv-ticker-tape-message { display: none !important; }
       .tradingview-widget-container__widget { overflow-x: auto !important; white-space: nowrap !important; }
+      
+      /* Force consistent ticker style */
+      .tv-ticker-tape-symbol__symbol {
+        font-size: 12px !important;
+        font-weight: bold !important;
+      }
+      .tv-ticker-tape-symbol__price, .tv-ticker-tape-symbol__change {
+        font-size: 12px !important;
+      }
+      
+      /* Ensure logos display correctly */
+      .tv-ticker-tape-symbol__logo {
+        display: inline-flex !important;
+        align-items: center !important;
+        height: 24px !important;
+        margin-right: 4px !important;
+      }
+      .tv-ticker-tape-symbol__logo-wrapper {
+        width: 24px !important;
+        height: 24px !important;
+      }
+      .tv-ticker-tape-symbol__logo img {
+        max-width: 24px !important;
+        max-height: 24px !important;
+      }
     `;
     document.head.appendChild(styleEl);
 
@@ -91,24 +108,18 @@ export default function TradingViewTicker() {
     script.async = true;
     script.type = 'text/javascript';
     script.innerHTML = JSON.stringify({
-      symbols: isMobile
-        ? [
-            { description: '', proName: 'FOREXCOM:SPXUSD' },
-            { description: '', proName: 'FOREXCOM:NSXUSD' },
-            { description: '', proName: 'FX_IDC:EURUSD' }
-          ]
-        : [
-            { description: 'S&P 500', proName: 'FOREXCOM:SPXUSD' },
-            { description: 'NASDAQ 100', proName: 'FOREXCOM:NSXUSD' },
-            { description: 'EUR/USD', proName: 'FX_IDC:EURUSD' },
-            { description: 'Bitcoin', proName: 'BITSTAMP:BTCUSD' },
-            { description: 'Tel Aviv 35', proName: 'TASE:TA35' },
-            { description: 'Tel Aviv 125', proName: 'TASE:TA125' }
-          ],
-      showSymbolLogo: false,
+      symbols: [
+        { description: '', proName: 'FOREXCOM:SPXUSD' },
+        { description: '', proName: 'FOREXCOM:NSXUSD' },
+        { description: '', proName: 'FX_IDC:EURUSD' },
+        { description: '', proName: 'BITSTAMP:BTCUSD' },
+        { description: '', proName: 'TASE:TA35' },
+        { description: '', proName: 'TASE:TA125' }
+      ],
+      showSymbolLogo: true,
       colorTheme: 'dark',
       isTransparent: false,
-      displayMode: isMobile ? 'regular' : 'compact',
+      displayMode: 'regular',
       locale: 'en',
       height: 36
     });
@@ -121,7 +132,7 @@ export default function TradingViewTicker() {
     setTimeout(patchIframes, 1000);
     setTimeout(patchIframes, 2000);
 
-  }, [isMobile, pathname]);
+  }, [pathname]);
 
   return (
     <div

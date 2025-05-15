@@ -9,13 +9,13 @@ export const metadata = {
 export default function YnetPage() {
   return (
     <>
-      <div className="bg-[#002F42] py-16">
+      <div className="bg-white py-6 mb-8">
         <MaxWidthWrapper>
           <div className="text-center" dir="rtl">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              מאמרים של גיא נתן ב-Ynet
+            <h1 className="text-[#002F42] text-center text-5xl md:text-6xl font-bold mb-2">
+              גיא נתן <span className="font-normal">ב-Ynet</span>
             </h1>
-            <p className="text-lg text-white opacity-90 max-w-3xl mx-auto">
+            <p className="text-[#002F42] text-lg opacity-90 max-w-3xl mx-auto">
               הטור של גיא נתן כתב Ynet עוסק בהנגשת ידע בתחום הפיננסי להמונים.
               כאן תוכלו למצוא את כל המאמרים שמתפרסמים במדור שוק ההון של Ynet.
             </p>

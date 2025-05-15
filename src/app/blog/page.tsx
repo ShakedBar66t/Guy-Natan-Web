@@ -333,9 +333,9 @@ export default function BlogPage() {
   return (
     <>
       {/* Header Banner */}
-      <div className="bg-[#002F42] py-6 mb-8">
+      <div className="bg-white py-6 mb-8">
         <MaxWidthWrapper>
-          <h1 className="text-white text-center text-5xl md:text-6xl font-bold mb-2">
+          <h1 className="text-[#002F42] text-center text-5xl md:text-6xl font-bold mb-2">
             הבלוג <span className="font-normal">שלנו</span>
           </h1>
         </MaxWidthWrapper>

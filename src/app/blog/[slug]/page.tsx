@@ -117,9 +117,9 @@ export default function BlogPostPage() {
   return (
     <>
       {/* Header Banner */}
-      <div className="bg-[#002F42] py-10">
+      <div className="bg-white py-10">
         <MaxWidthWrapper>
-          <div className="text-center text-white" dir="rtl">
+          <div className="text-center text-[#002F42]" dir="rtl">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
               {post.title}
             </h1>

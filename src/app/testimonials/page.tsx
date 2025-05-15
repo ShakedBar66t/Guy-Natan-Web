@@ -254,9 +254,9 @@ export default function TestimonialsPage() {
       `}</style>
       
       {/* Header Banner */}
-      <div className="bg-[#002F42] py-6 mb-8">
+      <div className="bg-white py-6 mb-8">
         <MaxWidthWrapper>
-          <h1 className="text-white text-center text-5xl md:text-6xl font-bold mb-2">
+          <h1 className="text-[#002F42] text-center text-5xl md:text-6xl font-bold mb-2">
             לקוחות <span className="font-normal">מרוצים</span>
           </h1>
         </MaxWidthWrapper>
@@ -373,19 +373,6 @@ export default function TestimonialsPage() {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* CTA Section */}
-        <div className="bg-gray-100 rounded-lg p-8 text-center mb-16">
-          <h3 className="text-2xl font-bold text-[#002F42] mb-4">
-            לקבלת פרטים נוספים עבור תוכנית ההכשרה
-          </h3>
-          <a 
-            href="/contact" 
-            className="inline-block bg-[#32a191] text-white font-medium py-3 px-8 rounded-lg hover:bg-[#002F42] transition-colors mt-4"
-          >
-            דברו איתנו עכשיו
-          </a>
         </div>
       </MaxWidthWrapper>
 

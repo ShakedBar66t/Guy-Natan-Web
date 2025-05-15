@@ -199,18 +199,18 @@ export default function PortfolioPage() {
   return (
     <>
       {/* Header Banner */}
-      <div className="bg-[#002F42] py-6 mb-8">
+      <div className="bg-white py-6 mb-8">
         <MaxWidthWrapper>
-          <h1 className="text-white text-center text-5xl md:text-6xl font-bold mb-2">
-            פעימות <span className="font-semibold">לתיקי השקעות</span>
+          <h1 className="text-[#002F42] text-center text-5xl md:text-6xl font-bold mb-2">
+            פעימות <span className="font-normal">לתיקי השקעות</span>
           </h1>
         </MaxWidthWrapper>
       </div>
       
       <MaxWidthWrapper className="mb-16">
-        <div className="bg-white rounded-xl shadow-md p-6 md:p-8 mb-10">
+        <div className="bg-white rounded-xl shadow-md p-6 md:p-8 mb-10 max-w-2xl mx-auto">
           <div className="text-center mb-6">
-            <p className="text-lg text-gray-700" dir="rtl">
+            <p className="text-lg text-gray-700 text-center mx-auto" dir="rtl">
               כלי זה מאפשר לכם לחשב את המספר המדויק של מניות שכדאי לרכוש על פי הפרמטרים שתזינו
             </p>
           </div>
@@ -220,32 +220,32 @@ export default function PortfolioPage() {
               e.preventDefault();
               calculateStockAmount();
             }}
-            className="grid grid-cols-1 gap-6"
+            className="grid grid-cols-1 gap-6 items-center justify-items-center"
             dir="rtl"
           >
             {/* Currency Toggle */}
-            <div className="flex justify-center mb-4">
-              <div className="flex items-center bg-gray-100 rounded-lg p-2">
+            <div className="flex justify-center mb-4 w-full">
+              <div className="flex items-center bg-gray-100 rounded-lg p-1 w-48">
                 <button
                   type="button"
-                  className={`px-4 py-2 rounded-lg transition-colors ${currencyType === 'ILS' ? 'bg-[#32a191] text-white' : 'bg-transparent text-gray-700'}`}
+                  className={`flex-1 px-3 py-1.5 rounded-lg transition-colors ${currencyType === 'ILS' ? 'bg-[#32a191] text-white' : 'bg-transparent text-gray-700'}`}
                   onClick={() => toggleCurrency('ILS')}
                 >
-                  פעימות בשקל (₪)
+                  שקל (₪)
                 </button>
                 <button
                   type="button"
-                  className={`px-4 py-2 rounded-lg transition-colors ${currencyType === 'USD' ? 'bg-[#32a191] text-white' : 'bg-transparent text-gray-700'}`}
+                  className={`flex-1 px-3 py-1.5 rounded-lg transition-colors ${currencyType === 'USD' ? 'bg-[#32a191] text-white' : 'bg-transparent text-gray-700'}`}
                   onClick={() => toggleCurrency('USD')}
                 >
-                  פעימות בדולר ($)
+                  דולר ($)
                 </button>
               </div>
             </div>
             
             {/* Basic Inputs */}
-            <div className="flex flex-col">
-              <label htmlFor="portfolioValue" className="mb-2 font-medium text-[#002F42]">
+            <div className="flex flex-col items-center w-full">
+              <label htmlFor="portfolioValue" className="mb-2 font-medium text-[#002F42] text-center">
                 שווי התיק (₪):
               </label>
               <input
@@ -256,16 +256,16 @@ export default function PortfolioPage() {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder="100000"
-                className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#32a191] w-48 text-center"
                 dir="rtl"
               />
             </div>
             
-            <div className="flex flex-col">
-              <label htmlFor="portfolioPercentage" className="mb-2 font-medium text-[#002F42]">
+            <div className="flex flex-col items-center w-full">
+              <label htmlFor="portfolioPercentage" className="mb-2 font-medium text-[#002F42] text-center">
                 אחוז רצוי מהתיק (%):
               </label>
-              <div className="relative">
+              <div className="relative w-48">
                 <input
                   id="portfolioPercentage"
                   name="portfolioPercentage"
@@ -274,7 +274,7 @@ export default function PortfolioPage() {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   placeholder="5"
-                  className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                  className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-[#32a191] text-center pr-8"
                   dir="rtl"
                 />
                 {portfolioPercentage && (
@@ -283,8 +283,8 @@ export default function PortfolioPage() {
               </div>
             </div>
             
-            <div className="flex flex-col">
-              <label htmlFor="stockPrice" className="mb-2 font-medium text-[#002F42]">
+            <div className="flex flex-col items-center w-full">
+              <label htmlFor="stockPrice" className="mb-2 font-medium text-[#002F42] text-center">
                 מחיר מניה {currencyType === 'ILS' ? '(₪)' : '($)'}:
               </label>
               <input
@@ -295,14 +295,14 @@ export default function PortfolioPage() {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder={currencyType === 'ILS' ? "50" : "150"}
-                className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#32a191]"
+                className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#32a191] w-48 text-center"
                 dir="rtl"
               />
             </div>
             
             {currencyType === 'USD' && (
-              <div className="flex flex-col">
-                <div className="mb-2 font-medium text-[#002F42]">
+              <div className="flex flex-col items-center w-full">
+                <div className="mb-2 font-medium text-[#002F42] text-center">
                   שער הדולר: 
                   {isLoadingRate ? (
                     <span className="text-gray-400 text-sm mr-2">טוען...</span>
@@ -310,7 +310,7 @@ export default function PortfolioPage() {
                     <span className="text-gray-600 text-sm mr-2">{typeof dollarRate === 'number' ? dollarRate.toFixed(2) : '3.70'} ₪</span>
                   )}
                 </div>
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-gray-500 w-48 text-center mx-auto">
                   שער זה מתעדכן אוטומטית ומשמש לחישובים פנימיים בלבד
                 </div>
               </div>
@@ -320,14 +320,14 @@ export default function PortfolioPage() {
             <div className="flex justify-center gap-4 mt-4">
               <button
                 type="submit"
-                className="bg-[#32a191] text-white py-3 px-8 rounded-lg text-xl font-medium hover:bg-[#002F42] transition-colors"
+                className="bg-[#32a191] text-white py-3 px-6 rounded-lg text-xl font-medium hover:bg-[#002F42] transition-colors w-24"
               >
                 חשב
               </button>
               <button
                 type="button"
                 onClick={resetForm}
-                className="bg-gray-300 text-gray-700 py-3 px-8 rounded-lg text-xl font-medium hover:bg-gray-400 transition-colors"
+                className="bg-gray-300 text-gray-700 py-3 px-6 rounded-lg text-xl font-medium hover:bg-gray-400 transition-colors w-24"
               >
                 נקה
               </button>
@@ -337,19 +337,19 @@ export default function PortfolioPage() {
         
         {/* Results Section */}
         {result !== null && (
-          <div className="bg-white rounded-xl shadow-md p-6 md:p-8 mb-10">
+          <div className="bg-white rounded-xl shadow-md p-6 md:p-8 mb-10 max-w-2xl mx-auto">
             <h2 className="text-2xl font-bold text-[#002F42] mb-6 text-center" dir="rtl">
               תוצאות החישוב:
             </h2>
             
-            <div className="text-center" dir="rtl">
+            <div className="text-center flex flex-col items-center" dir="rtl">
               <div className="mb-4">
-                <span className="text-gray-600 mb-1">כמות המניות שכדאי לרכוש:</span>
-                <div className="text-4xl font-bold text-[#32a191]">{formatNumber(result)}</div>
+                <span className="text-gray-600 mb-1 block text-center">כמות המניות שכדאי לרכוש:</span>
+                <div className="text-4xl font-bold text-[#32a191] text-center">{formatNumber(result)}</div>
               </div>
               
               <div className="bg-gray-50 p-4 rounded-lg max-w-md mx-auto">
-                <p className="text-gray-600">
+                <p className="text-gray-600 text-center">
                   <strong>הערה:</strong> מספר המניות מעוגל כלפי מטה למספר השלם הקרוב. 
                   זוהי המלצה בלבד ואינה מהווה ייעוץ השקעות מקצועי.
                 </p>

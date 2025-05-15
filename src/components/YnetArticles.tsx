@@ -78,21 +78,12 @@ export default function YnetArticles() {
   }
 
   return (
-    <div className="container mx-auto max-w-6xl px-4 py-10">
-      <div className="py-6 text-center">
-        <h1 className="text-4xl font-bold mb-4 text-[#022E41]">
-          הטור של גיא נתן ב-Ynet
-        </h1>
-        <p className="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
-          הנגשת ידע בתחום הפיננסי להמונים היא הליבה של העשייה שלנו, כאן תוכלו למצוא את כל המאמרים שמתפרסמים בשגרה במדור שוק ההון של Ynet ישראל.
-        </p>
-      </div>
-
+    <div className="container mx-auto max-w-6xl px-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {articles.map((article) => (
           <div
             key={article._id}
-            className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 w-full max-w-xl mx-auto"
+            className="border-0 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 w-full max-w-xl mx-auto"
           >
             <div className="p-3 flex justify-center items-center bg-[#f5f5f7]">
               <img
@@ -102,12 +93,12 @@ export default function YnetArticles() {
               />
             </div>
             
-            <div className="p-8 flex flex-col h-[280px]">
-              <h2 className="text-xl font-bold mb-auto text-center leading-tight">
+            <div className="p-6 flex flex-col">
+              <h2 className="text-xl font-bold mb-6 text-center leading-tight">
                 {article.title}
               </h2>
               
-              <div className="flex justify-between items-center mt-6">
+              <div className="flex justify-between items-center mt-auto">
                 <span className="text-sm text-gray-500">
                   {formatDate(article.publishedAt)}
                 </span>
@@ -115,9 +106,23 @@ export default function YnetArticles() {
                   href={article.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-[#32a191] text-white px-5 py-2 rounded text-sm hover:bg-[#2a8a7c] transition-colors"
+                  className="text-[#32a191] font-medium hover:text-[#2a8a7c] transition-colors flex items-center gap-2 group"
                 >
-                  קראו עוד
+                  <span>קראו עוד</span>
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="20" 
+                    height="20" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                    className="transform rotate-180 transition-transform group-hover:-translate-x-1" 
+                  >
+                    <path d="m9 18 6-6-6-6"/>
+                  </svg>
                 </a>
               </div>
             </div>

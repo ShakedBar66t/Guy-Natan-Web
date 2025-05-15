@@ -61,9 +61,9 @@ export default function TermPage() {
   return (
     <>
       {/* Header Banner */}
-      <div className="bg-[#002F42] py-6 mb-8">
+      <div className="bg-white py-6 mb-8">
         <MaxWidthWrapper>
-          <h1 className="text-white text-center text-4xl md:text-5xl font-bold mb-2">
+          <h1 className="text-[#002F42] text-center text-4xl md:text-5xl font-bold mb-2">
             מילון <span className="font-normal">מושגים</span>
           </h1>
         </MaxWidthWrapper>

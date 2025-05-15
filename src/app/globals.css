@@ -215,3 +215,22 @@ iframe[src*="tradingview.com"] {
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out forwards;
 }
+
+/* Position UserWay accessibility widget in the middle right */
+#userway-widget-container,
+[class*="userway-widget"],
+div[id^="userway"] {
+  top: 50vh !important;
+  transform: translateY(-50%) !important;
+  position: fixed !important;
+  right: 10px !important;
+  margin-top: 0 !important;
+}
+
+iframe[src*="userway.org"] {
+  top: 50vh !important;
+  transform: translateY(-50%) !important;
+  position: fixed !important;
+  right: 10px !important;
+  margin-top: 0 !important;
+}
